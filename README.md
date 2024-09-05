@@ -2,6 +2,8 @@
 
 This repository contains the GUI software developed in order to identify instances where a Satellite-Derived Waterline (SDW) is unable to accurately detect the land-water interface, whether partially or fully.
 
+This GUI was developed using the [Tkinter-Designer](https://github.com/ParthJadhav/Tkinter-Designer) framework, which in turn uses Tkinter on the back side. 
+
 ## Repository structure
 ...
 
