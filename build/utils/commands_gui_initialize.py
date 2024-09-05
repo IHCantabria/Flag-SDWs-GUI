@@ -2,7 +2,9 @@
 This file is intended to be a snippet of the GUI initialization code in gui_initialize.py.
 The code in this file is intended to be used as a reference for the commands used to initialize the GUI elements.
 """
+import os
 from tkinter import Tk, messagebox, filedialog
+import time
 
 def select_folder(folder_path, button_id):
     """
@@ -42,7 +44,13 @@ def get_entry_text(entry, entry_id):
         print(f"No text in Entry {entry_id}.")  # Print a message if no text is entered
         return
 
-def create_
+def create_output_folder(basedir):
+    """
+    Function to create an output folder with the current timestamp.
+    """
+    output_folder = "output_folder " + time.strftime("%Y%m%d-%H%M%S")
+    os.makedirs(os.path.join(basedir, output_folder), exist_ok=True)
+    
 
 def start_button(entries_widgets: list, folder_path: dict, window: Tk):
     """
@@ -62,8 +70,8 @@ def start_button(entries_widgets: list, folder_path: dict, window: Tk):
         messagebox.showerror("Error", "Please fill in all the fields.")  # Show an error message if any of the entries is empty
         return
     else:
-        # print the entries just to check
-        print("Entries:", entries_fc)
+        # Create the output folder
+        create_output_folder(folder_path[3])
         # If all entries are filled, close the window
         window.destroy()
     return
