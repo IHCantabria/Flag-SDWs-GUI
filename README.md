@@ -1,5 +1,7 @@
 # Flag-SDWs-GUI
 
+This repository contains the GUI software developed in order to identify instances where a Satellite-Derived Waterline (SDW) is unable to accurately detect the land-water interface, whether partially or fully.
+
 ## Repository structure
 ...
 
