@@ -50,6 +50,7 @@ def create_output_folder(basedir):
     """
     output_folder = "output_folder " + time.strftime("%Y%m%d-%H%M%S")
     os.makedirs(os.path.join(basedir, output_folder), exist_ok=True)
+    print(f"Output folder created: {output_folder}")
     
 
 def start_button(entries_widgets: list, folder_path: dict, window: Tk):
