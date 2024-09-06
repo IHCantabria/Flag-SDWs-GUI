@@ -48,9 +48,14 @@ def create_output_folder(basedir):
     """
     Function to create an output folder with the current timestamp.
     """
+    # Create the output folder with the current timestamp
     output_folder = "output_folder " + time.strftime("%Y%m%d-%H%M%S")
-    os.makedirs(os.path.join(basedir, output_folder), exist_ok=True)
+    # Create the output folder path
+    output_folder_path = os.path.join(basedir, output_folder)
+    os.makedirs(output_folder_path, exist_ok=True)
     print(f"Output folder created: {output_folder}")
+    return output_folder_path
+    
     
 
 def start_button(entries_widgets: list, folder_path: dict, window: Tk):
