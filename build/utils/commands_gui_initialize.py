@@ -55,8 +55,6 @@ def create_output_folder(basedir):
     os.makedirs(output_folder_path, exist_ok=True)
     print(f"Output folder created: {output_folder}")
     return output_folder_path
-    
-    
 
 def start_button(entries_widgets: list, folder_path: dict, window: Tk):
     """
