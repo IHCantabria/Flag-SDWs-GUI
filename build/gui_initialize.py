@@ -8,11 +8,11 @@ from pathlib import Path
 # from tkinter import *
 # Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, messagebox
-from utils.commands_gui_initialize import select_folder, start_button
+from utils.commands_gui_initialize import select_folder, select_csv_file, start_button
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"D:\Repos Github\Flag-SDWs-GUI\build\assets\frame0")
-
+#ASSETS_PATH = OUTPUT_PATH / Path(r"D:\Repos Github\Flag-SDWs-GUI\build\assets\frame0")
+ASSETS_PATH = Path.joinpath(OUTPUT_PATH, "assets/frame0")
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
@@ -36,10 +36,9 @@ window.configure(bg = "#FFFFFF")
 # Set the action when trying to close the window
 window.protocol("WM_DELETE_WINDOW", on_closing)
 
-# Dictionary to store the selected folder paths
-# The keys are the button IDs and the values are the selected folder paths
-folder_path = {}
-
+# Dictionary to store the selected folder/file paths
+# The keys are the button IDs and the values are the selected folder/file paths
+in_files = {}
 
 canvas = Canvas(
     window,
@@ -173,7 +172,7 @@ button_1 = Button(
     image=button_image_1,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: start_button([entry_1, entry_2], folder_path, window),
+    command=lambda: start_button([entry_1, entry_2], in_files, window),
     relief="flat"
 )
 button_1.place(
@@ -198,7 +197,7 @@ button_2 = Button(
     image=button_image_2,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: select_folder(folder_path, 2),
+    command=lambda: select_csv_file(in_files, 2),
     relief="flat"
 )
 button_2.place(
@@ -215,7 +214,7 @@ button_3 = Button(
     image=button_image_3,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: select_folder(folder_path, 3),
+    command=lambda: select_folder(in_files, 3),
     relief="flat"
 )
 button_3.place(
@@ -232,7 +231,7 @@ button_4 = Button(
     image=button_image_4,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: select_folder(folder_path, 4),
+    command=lambda: select_folder(in_files, 4),
     relief="flat"
 )
 button_4.place(

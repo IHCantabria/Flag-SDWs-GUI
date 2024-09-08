@@ -7,23 +7,42 @@ from pathlib import Path
 from tkinter import Tk, messagebox, filedialog
 import time
 
-def select_folder(folder_path, button_id):
+def select_folder(in_files, button_id):
     """
     Open a dialog to select a folder and return the selected folder path.
     
     Parameters:
-    - folder_path (dict): Dictionary to store the selected folder paths.
+    - in_files (dict): Dictionary to store the selected folder paths.
     - button_id (str): ID of the button used to select the folder.
     
     Returns:
     - None
     """
-    folder_path[button_id] = filedialog.askdirectory()  # Open the dialog to select a folder
-    if folder_path[button_id]:
-        print("Selected folder:", folder_path[button_id]) # Print the selected folder path if any
+    in_files[button_id] = filedialog.askdirectory() # Open the dialog to select a folder
+    if in_files[button_id]:
+        print("Selected folder:", in_files[button_id]) # Print the selected folder path if any
         return
     else:
-        print("No folder selected.")  # Print a message if no folder is selected
+        print("No folder selected.") # Print a message if no folder is selected
+        return
+
+def select_csv_file(file_path, button_id):
+    """
+    Open a dialog to select a CSV file and return the selected file path.
+    
+    Parameters:
+    - file_path (dict): Dictionary to store the selected file paths.
+    - button_id (str): ID of the button used to select the file.
+    
+    Returns:
+    - None
+    """
+    file_path[button_id] = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")])  # Open the dialog to select a CSV file
+    if file_path[button_id]:
+        print("Selected file:", file_path[button_id]) # Print the selected file path if any
+        return
+    else:
+        print("No file selected.") # Print a message if no file is selected
         return
 
 def get_entry_text(entry, entry_id):
@@ -59,13 +78,13 @@ def create_output_folder():
     print(f"Output folder created: {output_folder_path}")
     return output_folder_path
 
-def start_button(entries_widgets: list, folder_path: dict, window: Tk):
+def start_button(entries_widgets: list, in_files: dict, window: Tk):
     """
     Function to be executed when the Start button is clicked.
     
     Parameters:
     - entries_widgets (list): List of Entry widgets.
-    - folder_path (dict): Dictionary containing the selected folder paths.
+    - in_files (dict): Dictionary containing the selected folder paths.
     
     Returns:
     - None
@@ -73,7 +92,7 @@ def start_button(entries_widgets: list, folder_path: dict, window: Tk):
     # Retrieve the entries from the Entry widgets
     entries_fc = {id + 1: get_entry_text(entry, id + 1) for id, entry in enumerate(entries_widgets)}
     # Check that the entries are not empty
-    if any([e is None for e in entries_fc.values()]) or len(folder_path) != 3:
+    if any([e is None for e in entries_fc.values()]) or len(in_files) != 3:
         messagebox.showerror("Error", "Please fill in all the fields.")  # Show an error message if any of the entries is empty
         return
     else:

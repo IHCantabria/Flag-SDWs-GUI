@@ -10,8 +10,9 @@ if __name__ == "__main__":
     from gui_initialize import *
     sys.path.append(str(Path(__file__).parent))
     window.mainloop()
+    print("Initialization GUI closed.")
     
     # Run the main GUI
     sys.path.append(str(Path(__file__).parent))
-    from gui_main import window
+    from gui_main_frame import window
     window.mainloop()
