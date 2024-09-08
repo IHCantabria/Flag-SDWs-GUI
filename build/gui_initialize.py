@@ -11,11 +11,11 @@ from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, messagebox
 from utils.commands_gui_initialize import select_folder, start_button
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"D:\GUI Flag SDWs\test_gui\build\assets\frame0")
+ASSETS_PATH = OUTPUT_PATH / Path(r"D:\Tkinter-Designer\test_gui\build\assets\frame0")
+
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
-
 
 def on_closing():
     # Display confirmation dialog
@@ -27,7 +27,6 @@ def on_closing():
         
     else: # If "No" is selected, the message box closes automatically (no action needed)
         pass    
-    
 
 window = Tk()
 
@@ -40,6 +39,7 @@ window.protocol("WM_DELETE_WINDOW", on_closing)
 # Dictionary to store the selected folder paths
 # The keys are the button IDs and the values are the selected folder paths
 folder_path = {}
+
 
 canvas = Canvas(
     window,
@@ -132,10 +132,10 @@ canvas.create_text(
 )
 
 canvas.create_text(
-    282.0,
+    278.0,
     286.0,
     anchor="nw",
-    text="Select the folder to save all the process:",
+    text="Select the metocean time series CSV file:",
     fill="#4B4B91",
     font=("Verdana", 16 * -1)
 )
@@ -166,6 +166,7 @@ canvas.create_text(
     font=("Verdana", 38 * -1)
 )
 
+# START BUTTON
 button_image_1 = PhotoImage(
     file=relative_to_assets("button_1.png"))
 button_1 = Button(
@@ -190,7 +191,7 @@ image_1 = canvas.create_image(
     image=image_image_1
 )
 
-# OUTPUT FOLDER BUTTON
+# METOCEAN CSV BUTTON
 button_image_2 = PhotoImage(
     file=relative_to_assets("button_2.png"))
 button_2 = Button(
@@ -224,7 +225,7 @@ button_3.place(
     height=25.0
 )
 
-# RGB BUTTON
+# RGB FOLDER BUTTON
 button_image_4 = PhotoImage(
     file=relative_to_assets("button_4.png"))
 button_4 = Button(
@@ -244,7 +245,7 @@ button_4.place(
 image_image_2 = PhotoImage(
     file=relative_to_assets("image_2.png"))
 image_2 = canvas.create_image(
-    266.0,
+    265.0,
     22.0,
     image=image_image_2
 )
@@ -253,16 +254,8 @@ image_image_3 = PhotoImage(
     file=relative_to_assets("image_3.png"))
 image_3 = canvas.create_image(
     265.0,
-    288.0,
-    image=image_image_3
-)
-
-image_image_4 = PhotoImage(
-    file=relative_to_assets("image_4.png"))
-image_4 = canvas.create_image(
-    265.0,
     104.0,
-    image=image_image_4
+    image=image_image_3
 )
 
 canvas.create_rectangle(
@@ -272,5 +265,13 @@ canvas.create_rectangle(
     359.0,
     fill="#DEBF33",
     outline="")
+
+image_image_4 = PhotoImage(
+    file=relative_to_assets("image_4.png"))
+image_4 = canvas.create_image(
+    265.0,
+    283.0,
+    image=image_image_4
+)
 window.resizable(False, False)
 window.mainloop()
