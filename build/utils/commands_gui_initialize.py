@@ -71,12 +71,15 @@ def create_output_folder():
     # Get the directory where the main script is located
     basedir = Path(__file__).parent.parent
     # Create the output folder with the current timestamp
-    output_folder = "output_folder_" + time.strftime("%Y%m%d-%H%M%S")
+    output_folder = "output_folder_" + time.strftime("%Y%m%d%H%M%S")
     # Create the output folder path
     output_folder_path = os.path.join(basedir, output_folder)
     os.makedirs(output_folder_path, exist_ok=True)
     print(f"Output folder created: {output_folder_path}")
-    return output_folder_path
+    # Create a folder to store the input files
+    input_files_folder = os.path.join(output_folder_path, "input_files")
+    os.makedirs(input_files_folder, exist_ok=True)
+    return output_folder_path, input_files_folder
 
 def start_button(entries_widgets: list, in_files: dict, window: Tk):
     """
@@ -97,7 +100,30 @@ def start_button(entries_widgets: list, in_files: dict, window: Tk):
         return
     else:
         # Create the output folder
-        create_output_folder()
-        # If all entries are filled, close the window
+        global output_folder_path, input_files_folder
+        output_folder_path, input_files_folder = create_output_folder()
+        # Create a TXT file with the input files, folders and entries information
+        in_files_names = {
+            2: "Metocean CSV File",
+            3: "File GDB Path",
+            4: "RGB Folder Path"
+            }
+        entry_names = {
+            1: "SDW Feature Class Name",
+            2: "Transects Feature Class Name",
+            }
+        # Create a dictionary to store the input files, folders and entries information
+        global in_files_dict, entries_fc_dict
+        in_files_dict = {in_files_names[key]: in_files[key] for key in in_files}
+        entries_fc_dict = {entry_names[key]: entries_fc[key] for key in entries_fc}
+        
+        with open(os.path.join(input_files_folder, "input_info.txt"), "w") as f:
+            f.write("Folders Information\n\n")
+            for key in in_files:
+                f.write(f"{in_files_names[key]}: {in_files[key]}\n")
+            f.write("\nFC Names\n\n")
+            for key in entries_fc:
+                f.write(f"{entry_names[key]}: {entries_fc[key]}\n")
+        # Close the window
         window.destroy()
     return
