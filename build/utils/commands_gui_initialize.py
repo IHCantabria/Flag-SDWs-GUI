@@ -3,6 +3,7 @@ This file is intended to be a snippet of the GUI initialization code in gui_init
 The code in this file is intended to be used as a reference for the commands used to initialize the GUI elements.
 """
 import os
+from pathlib import Path
 from tkinter import Tk, messagebox, filedialog
 import time
 
@@ -19,7 +20,7 @@ def select_folder(folder_path, button_id):
     """
     folder_path[button_id] = filedialog.askdirectory()  # Open the dialog to select a folder
     if folder_path[button_id]:
-        print("Selected folder:", folder_path[button_id])  # Print the selected folder path if any
+        print("Selected folder:", folder_path[button_id]) # Print the selected folder path if any
         return
     else:
         print("No folder selected.")  # Print a message if no folder is selected
@@ -44,16 +45,18 @@ def get_entry_text(entry, entry_id):
         print(f"No text in Entry {entry_id}.")  # Print a message if no text is entered
         return
 
-def create_output_folder(basedir):
+def create_output_folder():
     """
     Function to create an output folder with the current timestamp.
     """
+    # Get the directory where the main script is located
+    basedir = Path(__file__).parent.parent
     # Create the output folder with the current timestamp
-    output_folder = "output_folder " + time.strftime("%Y%m%d-%H%M%S")
+    output_folder = "output_folder_" + time.strftime("%Y%m%d-%H%M%S")
     # Create the output folder path
     output_folder_path = os.path.join(basedir, output_folder)
     os.makedirs(output_folder_path, exist_ok=True)
-    print(f"Output folder created: {output_folder}")
+    print(f"Output folder created: {output_folder_path}")
     return output_folder_path
 
 def start_button(entries_widgets: list, folder_path: dict, window: Tk):
@@ -75,7 +78,7 @@ def start_button(entries_widgets: list, folder_path: dict, window: Tk):
         return
     else:
         # Create the output folder
-        create_output_folder(folder_path[3])
+        create_output_folder()
         # If all entries are filled, close the window
         window.destroy()
     return
