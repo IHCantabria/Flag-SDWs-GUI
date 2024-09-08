@@ -8,6 +8,7 @@ import tkinter as tk
 if __name__ == "__main__":
     # Run the initialization GUI
     from gui_initialize import *
+    from utils.commands_gui_initialize import *
     sys.path.append(str(Path(__file__).parent))
     window.mainloop()
     print("Initialization GUI closed.")
