@@ -8,8 +8,8 @@ from pathlib import Path
 # from tkinter import *
 # Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, messagebox
-#from utils.commands_gui_main_frame import load_csv
 from utils.commands_gui_initialize import *
+from utils.commands_gui_main_frame import set_sdw_dropdown, command_plot_button
 
 OUTPUT_PATH = Path(__file__).parent
 #ASSETS_PATH = OUTPUT_PATH / Path(r"D:\Repos Github\Flag-SDWs-GUI\build\assets\frame0")
@@ -31,7 +31,7 @@ def on_closing():
 
 window = Tk()
 window.title("Flag SDWs GUI")
-window.geometry("1115x670")
+window.geometry("1523x891")
 window.configure(bg = "#FFFFFF")
 # Set the action when trying to close the window
 window.protocol("WM_DELETE_WINDOW", on_closing)
@@ -39,8 +39,8 @@ window.protocol("WM_DELETE_WINDOW", on_closing)
 canvas = Canvas(
     window,
     bg = "#FFFFFF",
-    height = 670,
-    width = 1115,
+    height = 891,
+    width = 1523,
     bd = 0,
     highlightthickness = 0,
     relief = "ridge"
@@ -48,21 +48,268 @@ canvas = Canvas(
 
 canvas.place(x = 0, y = 0)
 canvas.create_rectangle(
-    0.0,
-    0.0,
-    1115.0,
-    104.0,
-    fill="#DEBF33",
+    47.0,
+    98.0,
+    344.0,
+    486.0,
+    fill="#F7F0CE",
+    outline="")
+
+canvas.create_rectangle(
+    539.0,
+    98.0,
+    1479.0,
+    208.0,
+    fill="#F7F0CE",
     outline="")
 
 canvas.create_text(
-    280.0,
-    312.0,
+    105.0,
+    30.0,
     anchor="nw",
-    text="This is a test for the Frame 2",
-    fill="#000000",
+    text="Select a SDW",
+    fill="#4B4B91",
     font=("Verdana", 38 * -1)
 )
 
+canvas.create_text(
+    539.0,
+    30.0,
+    anchor="nw",
+    text="SDW data",
+    fill="#4B4B91",
+    font=("Verdana", 38 * -1)
+)
+
+canvas.create_text(
+    98.0,
+    530.0,
+    anchor="nw",
+    text="Flag SDW Transects",
+    fill="#4B4B91",
+    font=("Verdana", 38 * -1)
+)
+
+canvas.create_rectangle(
+    15.0,
+    8.0,
+    105.0,
+    98.0,
+    fill="#FFFFFF",
+    outline="")
+
+canvas.create_rectangle(
+    8.0,
+    508.0,
+    98.0,
+    598.0,
+    fill="#FFFFFF",
+    outline="")
+
+canvas.create_rectangle(
+    539.0,
+    300.0,
+    1479.0,
+    553.0,
+    fill="#F7F0CE",
+    outline="")
+
+canvas.create_rectangle(
+    47.0,
+    613.0,
+    1123.0,
+    853.0,
+    fill="#F7F0CE",
+    outline="")
+
+canvas.create_text(
+    539.0,
+    230.0,
+    anchor="nw",
+    text="Metocean data",
+    fill="#4B4B91",
+    font=("Verdana", 38 * -1)
+)
+
+image_image_1 = PhotoImage(
+    file=relative_to_assets("image_1.png"))
+image_1 = canvas.create_image(
+    1407.0,
+    822.0,
+    image=image_image_1
+)
+
+button_image_1 = PhotoImage(
+    file=relative_to_assets("button_1.png"))
+button_1 = Button(
+    image=button_image_1,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: command_plot_button(window, sdw_dropdown),
+    relief="flat"
+)
+button_1.place(
+    x=351.0,
+    y=98.0,
+    width=133.0,
+    height=61.0
+)
+
+button_image_2 = PhotoImage(
+    file=relative_to_assets("button_2.png"))
+button_2 = Button(
+    image=button_image_2,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: print("button_2 clicked"),
+    relief="flat"
+)
+button_2.place(
+    x=1134.0,
+    y=671.0,
+    width=167.0,
+    height=123.0
+)
+
+canvas.create_text(
+    85.0,
+    649.0,
+    anchor="nw",
+    text="Select Transect ID",
+    fill="#4B4B91",
+    font=("Verdana", 30 * -1)
+)
+
+canvas.create_text(
+    574.0,
+    327.0,
+    anchor="nw",
+    text="Hs",
+    fill="#4B4B91",
+    font=("Verdana", 30 * -1)
+)
+
+# Create a dropdown menu, single selection
+sdw_dropdown = set_sdw_dropdown(canvas)
+# Get the selected SDW
+sdw_dropdown_selected = sdw_dropdown.selected_option.get()
+
+canvas.create_text(
+    908.0,
+    321.0,
+    anchor="nw",
+    text="Tide",
+    fill="#4B4B91",
+    font=("Verdana", 30 * -1)
+)
+
+canvas.create_text(
+    1254.0,
+    327.0,
+    anchor="nw",
+    text="Tide state",
+    fill="#4B4B91",
+    font=("Verdana", 30 * -1)
+)
+
+canvas.create_text(
+    489.0,
+    631.0,
+    anchor="nw",
+    text="Select the type ",
+    fill="#4B4B91",
+    font=("Verdana", 30 * -1)
+)
+
+canvas.create_text(
+    489.0,
+    674.0,
+    anchor="nw",
+    text="of indicator",
+    fill="#4B4B91",
+    font=("Verdana", 30 * -1)
+)
+
+canvas.create_text(
+    846.0,
+    631.0,
+    anchor="nw",
+    text="Select the level",
+    fill="#4B4B91",
+    font=("Verdana", 30 * -1)
+)
+
+canvas.create_text(
+    846.0,
+    674.0,
+    anchor="nw",
+    text="of confidence",
+    fill="#4B4B91",
+    font=("Verdana", 30 * -1)
+)
+
+canvas.create_rectangle(
+    71.0,
+    731.0,
+    1096.0488891601562,
+    733.0,
+    fill="#000000",
+    outline="")
+
+image_image_3 = PhotoImage(
+    file=relative_to_assets("image_3.png"))
+image_3 = canvas.create_image(
+    1329.0,
+    440.0,
+    image=image_image_3
+)
+
+image_image_4 = PhotoImage(
+    file=relative_to_assets("image_4.png"))
+image_4 = canvas.create_image(
+    1329.0,
+    440.0,
+    image=image_image_4
+)
+
+image_image_5 = PhotoImage(
+    file=relative_to_assets("image_5.png"))
+image_5 = canvas.create_image(
+    635.0,
+    404.0,
+    image=image_image_5
+)
+
+image_image_6 = PhotoImage(
+    file=relative_to_assets("image_6.png"))
+image_6 = canvas.create_image(
+    969.0,
+    404.0,
+    image=image_image_6
+)
+
+image_image_7 = PhotoImage(
+    file=relative_to_assets("image_7.png"))
+image_7 = canvas.create_image(
+    146.0,
+    774.0,
+    image=image_image_7
+)
+
+image_image_8 = PhotoImage(
+    file=relative_to_assets("image_8.png"))
+image_8 = canvas.create_image(
+    550.0,
+    774.0,
+    image=image_image_8
+)
+
+image_image_9 = PhotoImage(
+    file=relative_to_assets("image_9.png"))
+image_9 = canvas.create_image(
+    907.0,
+    774.0,
+    image=image_image_9
+)
 window.resizable(False, False)
 window.mainloop()
