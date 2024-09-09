@@ -29,7 +29,6 @@ def on_closing():
         pass    
 
 window = Tk()
-
 window.title("Flag SDWs GUI")
 window.geometry("688x410")
 window.configure(bg = "#FFFFFF")

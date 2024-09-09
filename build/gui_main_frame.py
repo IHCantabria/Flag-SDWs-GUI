@@ -7,22 +7,34 @@ from pathlib import Path
 
 # from tkinter import *
 # Explicit imports to satisfy Flake8
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
-
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, messagebox
+from utils.commands_gui_main_frame import load_csv
+from utils.commands_gui_initialize import *
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"D:\GUI Flag SDWs\test_gui\build\assets\frame1")
-
+#ASSETS_PATH = OUTPUT_PATH / Path(r"D:\Repos Github\Flag-SDWs-GUI\build\assets\frame0")
+ASSETS_PATH = Path.joinpath(OUTPUT_PATH, "assets/frame1")
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
+def on_closing():
+    # Display confirmation dialog
+    response = messagebox.askyesno("Close Window", "Are you sure you want to close?")
+    if response:  # If "Yes" is selected
+        print("Closing the window and stopping the program...")
+        # Raise an error to stop the mainloop and the program
+        raise SystemExit
+        
+    else: # If "No" is selected, the message box closes automatically (no action needed)
+        pass
 
 window = Tk()
-
+window.title("Flag SDWs GUI")
 window.geometry("1115x670")
 window.configure(bg = "#FFFFFF")
-
+# Set the action when trying to close the window
+window.protocol("WM_DELETE_WINDOW", on_closing)
 
 canvas = Canvas(
     window,
@@ -51,5 +63,6 @@ canvas.create_text(
     fill="#000000",
     font=("Verdana", 38 * -1)
 )
+
 window.resizable(False, False)
 window.mainloop()

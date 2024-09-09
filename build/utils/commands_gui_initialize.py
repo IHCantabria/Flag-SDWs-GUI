@@ -3,6 +3,8 @@ This file is intended to be a snippet of the GUI initialization code in gui_init
 The code in this file is intended to be used as a reference for the commands used to initialize the GUI elements.
 """
 import os
+import pandas as pd
+import geopandas as gpd
 from pathlib import Path
 from tkinter import Tk, messagebox, filedialog
 import time
@@ -81,6 +83,38 @@ def create_output_folder():
     os.makedirs(input_files_folder, exist_ok=True)
     return output_folder_path, input_files_folder
 
+def load_csv(file_path):
+    """
+    Load a CSV file and return the DataFrame.
+    
+    Parameters:
+    - file_path (str): Path to the CSV file.
+    
+    Returns:
+    - df (DataFrame): DataFrame with the CSV file data.
+    """
+    df = pd.read_csv(file_path)  # Load the CSV file
+    df["date"] = pd.to_datetime(df["date"])  # Convert the "date" column to datetime
+    df.set_index("date", inplace=True)  # Set the "date" column as the index
+    print("CSV file loaded.")
+    return df
+
+def load_fc(gdb_path, fc_name):
+    """
+    Load a feature class and return the GeoDataFrame.
+    
+    Parameters:
+    - gdb_path (str): Path to the File GDB.
+    - fc_name (str): Name of the feature class.
+    
+    Returns:
+    - gdf (GeoDataFrame): GeoDataFrame with the feature class data.
+    """
+    gdf = gpd.read_file(gdb_path, layer=fc_name)  # Load the feature class
+    gdf["date"] = pd.to_datetime(gdf["date"])  # Convert the "date" column to datetime
+    print(f"{fc_name} loaded.")
+    return gdf
+
 def start_button(entries_widgets: list, in_files: dict, window: Tk):
     """
     Function to be executed when the Start button is clicked.
@@ -116,6 +150,12 @@ def start_button(entries_widgets: list, in_files: dict, window: Tk):
         global in_files_dict, entries_fc_dict
         in_files_dict = {in_files_names[key]: in_files[key] for key in in_files}
         entries_fc_dict = {entry_names[key]: entries_fc[key] for key in entries_fc}
+        
+        # Load the CSV file and the feature class
+        global metocean_df, sdw_fc, transects_fc
+        metocean_df = load_csv(in_files_dict["Metocean CSV File"])
+        sdw_fc = load_fc(in_files_dict["File GDB Path"], entries_fc_dict["SDW Feature Class Name"])
+        transects_fc = load_fc(in_files_dict["File GDB Path"], entries_fc_dict["Transects Feature Class Name"])
         
         with open(os.path.join(input_files_folder, "input_info.txt"), "w") as f:
             f.write("Folders Information\n\n")
