@@ -11,7 +11,8 @@ if __name__ == "__main__":
     sys.path.append(str(Path(__file__).parent))
     
     # Run the start GUI
-    from gui_ask_start import new_project, window
+    from gui_ask_start import window
+    from utils.commands_gui_ask_start import *
     window.mainloop()
     
     if new_project:

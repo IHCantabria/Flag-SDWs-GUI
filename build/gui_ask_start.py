@@ -34,8 +34,6 @@ window.configure(bg = "#FFFFFF")
 # Set the action when trying to close the window
 window.protocol("WM_DELETE_WINDOW", on_closing)
 
-global new_project
-new_project = True
 
 canvas = Canvas(
     window,
@@ -98,7 +96,7 @@ button_2 = Button(
     image=button_image_2,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: no_button_clicked(new_project, window),
+    command=lambda: no_button_clicked(window), # Update the global variable to False
     relief="flat"
 )
 button_2.place(

@@ -17,10 +17,13 @@ def yes_button_clicked(window: Tk):
     - None
     """
     print("Yes button clicked.")
+    # Set the global variable to True
+    global new_project
+    new_project = True
     window.destroy()
     return
 
-def no_button_clicked(new_project: bool, window: Tk):
+def no_button_clicked(window: Tk):
     """
     Command to be executed when the "No" button is clicked.
     
@@ -31,14 +34,15 @@ def no_button_clicked(new_project: bool, window: Tk):
     - None
     """
     print("No button clicked.")
-    # Update the global variable to False
+    # Set the global variable to False
+    global new_project
     new_project = False
     # Ask to select the input_info.txt created in the initialization GUI
     global input_info_file
     input_info_file = filedialog.askopenfilename(filetypes=[("input_info TXT file", "*.txt")])
     read_input_info_file(input_info_file)
     window.destroy()
-    return new_project
+    return
 
 def read_input_info_file(input_info_file: str):
     """
