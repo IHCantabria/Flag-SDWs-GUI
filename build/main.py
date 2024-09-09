@@ -15,7 +15,7 @@ if __name__ == "__main__":
     from utils.commands_gui_ask_start import *
     window.mainloop()
     
-    if new_project:
+    if new_project: # If the user wants to start a new project
         print("Starting a new project...")
         # Run the initialization GUI
         from gui_initialize import *
