@@ -44,18 +44,32 @@ def plot_tide(window, sdw_selection: str):
     date_sdw = sdw_selection.split(" - ")[0]
     date_sdw = pd.to_datetime(date_sdw).floor("h")
     # Create the figure
-    fig = Figure(figsize=(15, 3), dpi=100)
+    fig = Figure(figsize=(3, 1.5), dpi=100)
     tide_plot = fig.add_subplot(111)
+    # Plot the tide data for the selected date
     tide_plot.plot(metocean_df.loc[date_sdw].name,
-                   metocean_df.loc[date_sdw, "tide"], color="red", zorder=20)
+                   metocean_df.loc[date_sdw, "tide"],
+                   marker="o", lw=0, color="red", zorder=20)
+    # Plot a horizontal line at the selected SDW tide
+    tide_plot.axhline(y=metocean_df.loc[date_sdw, "tide"],
+                      color="red", ls="--", lw=0.5, zorder=15)
+    # Plot a horizontal line at the median tide level
+    tide_plot.axhline(y=metocean_df["tide"].median(), color="black", lw=0.5, zorder=10)
+    # Plot the entire tide data
     tide_plot.plot(metocean_df["tide"])
     tide_plot.set_xlabel("Time")
     tide_plot.set_ylabel("Tide (m)")
+    # Rotate x-axis ticks labels
+    tide_plot.set_xticklabels(tide_plot.get_xticklabels(), rotation=45)
+    # Tight layout
+    fig.tight_layout()
+    # Set the background transparent
+    fig.patch.set_facecolor('#F7F0CE')
     # Create the Tkinter canvas
     figure_canvas = FigureCanvasTkAgg(fig, master=window)
     figure_canvas.draw()
     # Place the canvas
-    figure_canvas.get_tk_widget().place(x=400, y=100)
+    figure_canvas.get_tk_widget().place(x=900, y=370)
         
     return
 
