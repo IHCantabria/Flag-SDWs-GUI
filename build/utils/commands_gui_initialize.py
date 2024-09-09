@@ -111,7 +111,8 @@ def load_fc(gdb_path, fc_name):
     - gdf (GeoDataFrame): GeoDataFrame with the feature class data.
     """
     gdf = gpd.read_file(gdb_path, layer=fc_name)  # Load the feature class
-    gdf["date"] = pd.to_datetime(gdf["date"])  # Convert the "date" column to datetime
+    if fc_name == "SDW Feature Class Name":
+        gdf["date"] = pd.to_datetime(gdf["date"])  # Convert the "date" column to datetime
     print(f"{fc_name} loaded.")
     return gdf
 

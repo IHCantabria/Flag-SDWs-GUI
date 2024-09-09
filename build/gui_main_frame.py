@@ -8,12 +8,12 @@ from pathlib import Path
 # from tkinter import *
 # Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, messagebox
-from utils.commands_gui_main_frame import load_csv
+#from utils.commands_gui_main_frame import load_csv
 from utils.commands_gui_initialize import *
 
 OUTPUT_PATH = Path(__file__).parent
 #ASSETS_PATH = OUTPUT_PATH / Path(r"D:\Repos Github\Flag-SDWs-GUI\build\assets\frame0")
-ASSETS_PATH = Path.joinpath(OUTPUT_PATH, "assets/frame1")
+ASSETS_PATH = Path.joinpath(OUTPUT_PATH, "assets/frame2")
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)

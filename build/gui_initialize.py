@@ -12,7 +12,7 @@ from utils.commands_gui_initialize import select_folder, select_csv_file, start_
 
 OUTPUT_PATH = Path(__file__).parent
 #ASSETS_PATH = OUTPUT_PATH / Path(r"D:\Repos Github\Flag-SDWs-GUI\build\assets\frame0")
-ASSETS_PATH = Path.joinpath(OUTPUT_PATH, "assets/frame0")
+ASSETS_PATH = Path.joinpath(OUTPUT_PATH, "assets/frame1")
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
@@ -26,7 +26,7 @@ def on_closing():
         raise SystemExit
         
     else: # If "No" is selected, the message box closes automatically (no action needed)
-        pass    
+        pass
 
 window = Tk()
 window.title("Flag SDWs GUI")
