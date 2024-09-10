@@ -28,7 +28,7 @@ def set_sdw_dropdown(canvas: Canvas):
     """
     # Set the SDW dropdown menu
     sdw_options = [f"{sdw_fc.iloc[i]['date']} - {sdw_fc.iloc[i]['sensor']}" for i in sdw_fc.index]
-    sdw_dropdown = DropdownApp(canvas, 120, 130, sdw_options)
+    sdw_dropdown = DropdownApp(canvas, 80, 110, sdw_options)
     return sdw_dropdown
 
 def plot_time_series(window: tk.Tk, sdw_selection: str, var: str):
@@ -46,8 +46,8 @@ def plot_time_series(window: tk.Tk, sdw_selection: str, var: str):
     print("Plotting tide data...")
     # Set the parameters for the selected variable to plot
     var_params = {
-        "hs": ["Hs (m)", (565, 370)],
-        "tide": ["Tide (m)", (900, 370)]
+        "hs": ["Hs (m)", (380, 310)],
+        "tide": ["Tide (m)", (710, 310)]
         }
     # Get the selected date SDW
     date_sdw = sdw_selection.split(" - ")[0]

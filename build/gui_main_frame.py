@@ -31,7 +31,7 @@ def on_closing():
 
 window = Tk()
 window.title("Flag SDWs GUI")
-window.geometry("1523x891")
+window.geometry("1242x782")
 window.configure(bg = "#FFFFFF")
 # Set the action when trying to close the window
 window.protocol("WM_DELETE_WINDOW", on_closing)
@@ -39,104 +39,117 @@ window.protocol("WM_DELETE_WINDOW", on_closing)
 canvas = Canvas(
     window,
     bg = "#FFFFFF",
-    height = 891,
-    width = 1523,
+    height = 782,
+    width = 1242,
     bd = 0,
     highlightthickness = 0,
     relief = "ridge"
 )
-
 canvas.place(x = 0, y = 0)
-canvas.create_rectangle(
-    47.0,
-    98.0,
-    344.0,
-    486.0,
-    fill="#F7F0CE",
-    outline="")
 
-canvas.create_rectangle(
-    539.0,
-    98.0,
-    1479.0,
-    208.0,
-    fill="#F7F0CE",
-    outline="")
+# Create a dropdown menu, single selection
+sdw_dropdown = set_sdw_dropdown(canvas)
+# Get the selected SDW
+sdw_dropdown_selected = sdw_dropdown.selected_option.get()
 
-canvas.create_text(
-    105.0,
-    30.0,
-    anchor="nw",
-    text="Select a SDW",
-    fill="#4B4B91",
-    font=("Verdana", 38 * -1)
-)
-
-canvas.create_text(
-    539.0,
-    30.0,
-    anchor="nw",
-    text="SDW data",
-    fill="#4B4B91",
-    font=("Verdana", 38 * -1)
-)
-
-canvas.create_text(
-    98.0,
-    530.0,
-    anchor="nw",
-    text="Flag SDW Transects",
-    fill="#4B4B91",
-    font=("Verdana", 38 * -1)
-)
-
-canvas.create_rectangle(
-    15.0,
-    8.0,
-    105.0,
-    98.0,
-    fill="#FFFFFF",
-    outline="")
-
-canvas.create_rectangle(
-    8.0,
-    508.0,
-    98.0,
-    598.0,
-    fill="#FFFFFF",
-    outline="")
-
-canvas.create_rectangle(
-    539.0,
-    300.0,
-    1479.0,
-    553.0,
-    fill="#F7F0CE",
-    outline="")
-
-canvas.create_rectangle(
-    47.0,
-    613.0,
-    1123.0,
-    853.0,
-    fill="#F7F0CE",
-    outline="")
-
-canvas.create_text(
-    539.0,
-    230.0,
-    anchor="nw",
-    text="Metocean data",
-    fill="#4B4B91",
-    font=("Verdana", 38 * -1)
+image_image_1 = PhotoImage(
+    file=relative_to_assets("image_1.png"))
+image_1 = canvas.create_image(
+    163.0,
+    272.0,
+    image=image_image_1
 )
 
 image_image_1 = PhotoImage(
     file=relative_to_assets("image_1.png"))
 image_1 = canvas.create_image(
-    1407.0,
-    822.0,
+    163.0,
+    272.0,
     image=image_image_1
+)
+
+image_image_2 = PhotoImage(
+    file=relative_to_assets("image_2.png"))
+image_2 = canvas.create_image(
+    801.0,
+    119.0,
+    image=image_image_2
+)
+
+image_image_3 = PhotoImage(
+    file=relative_to_assets("image_3.png"))
+image_3 = canvas.create_image(
+    798.0,
+    364.0,
+    image=image_image_3
+)
+
+image_image_4 = PhotoImage(
+    file=relative_to_assets("image_4.png"))
+image_4 = canvas.create_image(
+    456.0,
+    663.0,
+    image=image_image_4
+)
+
+canvas.create_text(
+    63.0,
+    18.0,
+    anchor="nw",
+    text="Select a SDW",
+    fill="#4B4B91",
+    font=("Verdana", 24 * -1)
+)
+
+canvas.create_text(
+    388.0,
+    18.0,
+    anchor="nw",
+    text="SDW data",
+    fill="#4B4B91",
+    font=("Verdana", 18 * -1)
+)
+
+canvas.create_text(
+    63.0,
+    492.0,
+    anchor="nw",
+    text="Flag SDW Transects",
+    fill="#4B4B91",
+    font=("Verdana", 24 * -1)
+)
+
+image_image_5 = PhotoImage(
+    file=relative_to_assets("image_5.png"))
+image_5 = canvas.create_image(
+    37.0,
+    33.0,
+    image=image_image_5
+)
+
+image_image_6 = PhotoImage(
+    file=relative_to_assets("image_6.png"))
+image_6 = canvas.create_image(
+    37.0,
+    507.0,
+    image=image_image_6
+)
+
+canvas.create_text(
+    388.0,
+    202.0,
+    anchor="nw",
+    text="Metocean data",
+    fill="#4B4B91",
+    font=("Verdana", 18 * -1)
+)
+
+image_image_7 = PhotoImage(
+    file=relative_to_assets("image_7.png"))
+image_7 = canvas.create_image(
+    1193.0,
+    749.0,
+    image=image_image_7
 )
 
 button_image_1 = PhotoImage(
@@ -149,10 +162,10 @@ button_1 = Button(
     relief="flat"
 )
 button_1.place(
-    x=351.0,
-    y=98.0,
+    x=97.0,
+    y=404.0,
     width=133.0,
-    height=61.0
+    height=46.0
 )
 
 button_image_2 = PhotoImage(
@@ -165,151 +178,190 @@ button_2 = Button(
     relief="flat"
 )
 button_2.place(
-    x=1134.0,
-    y=671.0,
+    x=917.0,
+    y=606.0,
     width=167.0,
     height=123.0
 )
 
 canvas.create_text(
-    85.0,
-    649.0,
+    63.0,
+    575.0,
     anchor="nw",
     text="Select Transect ID",
     fill="#4B4B91",
-    font=("Verdana", 30 * -1)
+    font=("Verdana", 24 * -1)
 )
 
 canvas.create_text(
-    574.0,
-    327.0,
+    410.0,
+    281.0,
     anchor="nw",
     text="Hs",
     fill="#4B4B91",
-    font=("Verdana", 30 * -1)
-)
-
-# Create a dropdown menu, single selection
-sdw_dropdown = set_sdw_dropdown(canvas)
-# Get the selected SDW
-sdw_dropdown_selected = sdw_dropdown.selected_option.get()
-
-canvas.create_text(
-    908.0,
-    321.0,
-    anchor="nw",
-    text="Tide",
-    fill="#4B4B91",
-    font=("Verdana", 30 * -1)
-)
-
-canvas.create_text(
-    1254.0,
-    327.0,
-    anchor="nw",
-    text="Tide state",
-    fill="#4B4B91",
-    font=("Verdana", 30 * -1)
-)
-
-canvas.create_text(
-    489.0,
-    631.0,
-    anchor="nw",
-    text="Select the type ",
-    fill="#4B4B91",
-    font=("Verdana", 30 * -1)
-)
-
-canvas.create_text(
-    489.0,
-    674.0,
-    anchor="nw",
-    text="of indicator",
-    fill="#4B4B91",
-    font=("Verdana", 30 * -1)
-)
-
-canvas.create_text(
-    846.0,
-    631.0,
-    anchor="nw",
-    text="Select the level",
-    fill="#4B4B91",
-    font=("Verdana", 30 * -1)
-)
-
-canvas.create_text(
-    846.0,
-    674.0,
-    anchor="nw",
-    text="of confidence",
-    fill="#4B4B91",
-    font=("Verdana", 30 * -1)
-)
-
-canvas.create_rectangle(
-    71.0,
-    731.0,
-    1096.0488891601562,
-    733.0,
-    fill="#000000",
-    outline="")
-
-image_image_3 = PhotoImage(
-    file=relative_to_assets("image_3.png"))
-image_3 = canvas.create_image(
-    1329.0,
-    440.0,
-    image=image_image_3
-)
-
-image_image_4 = PhotoImage(
-    file=relative_to_assets("image_4.png"))
-image_4 = canvas.create_image(
-    1329.0,
-    440.0,
-    image=image_image_4
-)
-
-image_image_5 = PhotoImage(
-    file=relative_to_assets("image_5.png"))
-image_5 = canvas.create_image(
-    635.0,
-    404.0,
-    image=image_image_5
-)
-
-image_image_6 = PhotoImage(
-    file=relative_to_assets("image_6.png"))
-image_6 = canvas.create_image(
-    969.0,
-    404.0,
-    image=image_image_6
-)
-
-image_image_7 = PhotoImage(
-    file=relative_to_assets("image_7.png"))
-image_7 = canvas.create_image(
-    146.0,
-    774.0,
-    image=image_image_7
+    font=("Verdana", 18 * -1)
 )
 
 image_image_8 = PhotoImage(
     file=relative_to_assets("image_8.png"))
 image_8 = canvas.create_image(
-    550.0,
-    774.0,
+    163.0,
+    141.0,
     image=image_image_8
+)
+
+canvas.create_text(
+    722.0,
+    281.0,
+    anchor="nw",
+    text="Tide",
+    fill="#4B4B91",
+    font=("Verdana", 18 * -1)
+)
+
+canvas.create_text(
+    1047.0,
+    282.0,
+    anchor="nw",
+    text="Tide state",
+    fill="#4B4B91",
+    font=("Verdana", 18 * -1)
+)
+
+canvas.create_text(
+    388.0,
+    575.0,
+    anchor="nw",
+    text="Select the type ",
+    fill="#4B4B91",
+    font=("Verdana", 24 * -1)
+)
+
+canvas.create_text(
+    388.0,
+    604.0,
+    anchor="nw",
+    text="of indicator",
+    fill="#4B4B91",
+    font=("Verdana", 24 * -1)
+)
+
+canvas.create_text(
+    676.0,
+    575.0,
+    anchor="nw",
+    text="Select the level",
+    fill="#4B4B91",
+    font=("Verdana", 24 * -1)
+)
+
+canvas.create_text(
+    678.0,
+    604.0,
+    anchor="nw",
+    text="of confidence",
+    fill="#4B4B91",
+    font=("Verdana", 24 * -1)
+)
+
+entry_image_1 = PhotoImage(
+    file=relative_to_assets("entry_1.png"))
+entry_bg_1 = canvas.create_image(
+    1000.5,
+    749.0,
+    image=entry_image_1
+)
+entry_1 = Text(
+    bd=0,
+    bg="#4B4B91",
+    fg="#000716",
+    highlightthickness=0
+)
+entry_1.place(
+    x=954.0,
+    y=737.0,
+    width=93.0,
+    height=22.0
 )
 
 image_image_9 = PhotoImage(
     file=relative_to_assets("image_9.png"))
 image_9 = canvas.create_image(
-    907.0,
-    774.0,
+    1100.0,
+    364.0,
     image=image_image_9
+)
+
+image_image_10 = PhotoImage(
+    file=relative_to_assets("image_10.png"))
+image_10 = canvas.create_image(
+    1100.0,
+    364.0,
+    image=image_image_10
+)
+
+image_image_11 = PhotoImage(
+    file=relative_to_assets("image_11.png"))
+image_11 = canvas.create_image(
+    471.0,
+    364.0,
+    image=image_image_11
+)
+
+image_image_12 = PhotoImage(
+    file=relative_to_assets("image_12.png"))
+image_12 = canvas.create_image(
+    783.0,
+    364.0,
+    image=image_image_12
+)
+
+image_image_13 = PhotoImage(
+    file=relative_to_assets("image_13.png"))
+image_13 = canvas.create_image(
+    176.0,
+    692.0,
+    image=image_image_13
+)
+
+image_image_14 = PhotoImage(
+    file=relative_to_assets("image_14.png"))
+image_14 = canvas.create_image(
+    470.0,
+    692.0,
+    image=image_image_14
+)
+
+image_image_15 = PhotoImage(
+    file=relative_to_assets("image_15.png"))
+image_15 = canvas.create_image(
+    778.0,
+    692.0,
+    image=image_image_15
+)
+
+image_image_16 = PhotoImage(
+    file=relative_to_assets("image_16.png"))
+image_16 = canvas.create_image(
+    368.0,
+    590.0,
+    image=image_image_16
+)
+
+image_image_17 = PhotoImage(
+    file=relative_to_assets("image_17.png"))
+image_17 = canvas.create_image(
+    43.0,
+    590.0,
+    image=image_image_17
+)
+
+image_image_18 = PhotoImage(
+    file=relative_to_assets("image_18.png"))
+image_18 = canvas.create_image(
+    656.0,
+    590.0,
+    image=image_image_18
 )
 window.resizable(False, False)
 window.mainloop()

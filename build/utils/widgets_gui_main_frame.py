@@ -42,7 +42,7 @@ class DropdownApp():
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         # Create a listbox with the options and associate it with the scrollbar
-        self.dropdown_listbox = tk.Listbox(dropdown_frame, height=20, listvariable=tk.StringVar(value=self.options),
+        self.dropdown_listbox = tk.Listbox(dropdown_frame, height=17, listvariable=tk.StringVar(value=self.options),
                                            selectmode=tk.SINGLE, yscrollcommand=scrollbar.set, width=25)
         self.dropdown_listbox.pack(side=tk.LEFT, fill=tk.BOTH)
         scrollbar.config(command=self.dropdown_listbox.yview)
