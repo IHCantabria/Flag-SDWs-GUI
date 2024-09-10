@@ -37,6 +37,7 @@ def set_sdw_dropdown(canvas: Canvas):
     # Set the SDW dropdown menu
     sdw_options = [f"{sdw_fc.iloc[i]['date']} - {sdw_fc.iloc[i]['sensor']}" for i in sdw_fc.index]
     sdw_dropdown = DropdownApp(canvas, 80, 110, sdw_options)
+    
     return sdw_dropdown
 
 def plot_time_series(window: tk.Tk, sdw_selection: str, var: str):
@@ -72,6 +73,7 @@ def plot_time_series(window: tk.Tk, sdw_selection: str, var: str):
         # Place the canvas in the window
         figure_canvas.get_tk_widget().place(x=var_params[var][1][0],
                                             y=var_params[var][1][1])
+        
         return
     # Plot the tide data for the selected date
     var_plot.plot(metocean_df.loc[date_sdw].name,
@@ -134,8 +136,7 @@ def show_flood_ebb(canvas: Canvas, sdw_selection: str):
     canvas = FigureCanvasTkAgg(fig, master=canvas)
     canvas.draw()
     canvas.get_tk_widget().place(x=1050, y=300)
-    # Refresh the window
-    canvas.update()
+    
     return
 
 def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: DropdownApp):
@@ -157,4 +158,5 @@ def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: DropdownApp
     plot_time_series(window, sdw_selection, "hs")
     # Show the flood or ebb tide image
     show_flood_ebb(canvas, sdw_selection)
+    
     return
