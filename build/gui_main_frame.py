@@ -158,7 +158,7 @@ button_1 = Button(
     image=button_image_1,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: command_plot_button(window, sdw_dropdown),
+    command=lambda: command_plot_button(window, canvas, sdw_dropdown),
     relief="flat"
 )
 button_1.place(
@@ -284,7 +284,7 @@ entry_1.place(
     height=22.0
 )
 
-image_image_9 = PhotoImage(
+"""image_image_9 = PhotoImage(
     file=relative_to_assets("image_9.png"))
 image_9 = canvas.create_image(
     1100.0,
@@ -298,7 +298,7 @@ image_10 = canvas.create_image(
     1100.0,
     364.0,
     image=image_image_10
-)
+)"""
 
 image_image_11 = PhotoImage(
     file=relative_to_assets("image_11.png"))
