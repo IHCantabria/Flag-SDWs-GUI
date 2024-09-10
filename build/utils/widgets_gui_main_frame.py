@@ -126,13 +126,7 @@ class MapBrowserApp():
                 popup=f"Transect ID {i}",
                 icon=folium.Icon(color="red", icon="info-sign")
             ).add_to(self.map)
-    
-    def add_alpha(self, rgb_img):
-        alpha_channel = np.ones((rgb_img.shape[1], rgb_img.shape[2]))  # create a new alpha channel of shape (2004, 2044) with all values set to 1
-        alpha_channel[(rgb_img[0] == 0) & (rgb_img[1] == 0) & (rgb_img[2] == 0)] = 0 # set alpha values to 0 for pixels where all RGB values are 0
-        rgba_image = np.concatenate((rgb_img, alpha_channel[np.newaxis, :, :]), axis=0) # concatenate the alpha channel with the RGB image along the first dimension to create a RGBA image
-        return rgba_image
-    
+       
     def plot_raster(self):
         """
         Read the raster file and return the data.
@@ -150,9 +144,8 @@ class MapBrowserApp():
             r, g, b = src.read()
             # Stack the bands
             rgb = np.dstack((r, g, b))
-            # Normalize the bands
-            rgb = (rgb / np.max(rgb)) * 255
-            rgb = rgb.astype(np.uint8)
+            # Normalize the bands to 0-1
+            rgb = rgb / rgb.max()
             src_crs = src.crs['init'].upper()
             min_lon, min_lat, max_lon, max_lat = src.bounds
             
@@ -167,7 +160,7 @@ class MapBrowserApp():
             
             proj = Transformer.from_crs(int(src_crs.split(":")[1]), int(dst_crs.split(":")[1]), always_xy=True)
             lon_n, lat_n = proj.transform(lon, lat)
-            
+
             bounds_fin.append([lat_n, lon_n])
 
         # Overlay raster (RGB) called img using add_child() function (opacity and bounding box set)
