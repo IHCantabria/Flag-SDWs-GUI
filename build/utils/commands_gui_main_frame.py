@@ -4,6 +4,7 @@ This file holds the backend code for the main GUI frame.
 from pathlib import Path
 import tkinter as tk
 from tkinter import Canvas, PhotoImage, messagebox
+import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from utils.matplotlib_config import *
@@ -115,14 +116,27 @@ def show_flood_ebb(canvas: Canvas, sdw_selection: str):
     date_sdw = pd.to_datetime(date_sdw).floor("h")
     # Check the previous tide level to determine if the tide is in flood or ebb
     if metocean_df.loc[date_sdw, "tide"] > metocean_df.loc[date_sdw - pd.Timedelta(hours=1), "tide"]:
+        print("Flood tide")
         # Plot the flood tide image
-        image_image = PhotoImage(file=relative_to_assets("image_9.png"))
-        image = canvas.create_image(1100.0, 364.0, image=image_image)
+        fig = Figure(figsize=(1.5, 1.5), dpi=100)
+        ax = fig.add_subplot(111)
+        image = ax.imshow(plt.imread(relative_to_assets("image_9.png")))
     else:
+        print("Ebb tide")
         # Plot the ebb tide image
-        image_image = PhotoImage(file=relative_to_assets("image_10.png"))
-        image = canvas.create_image(1100.0, 364.0, image=image_image)
-    
+        fig = Figure(figsize=(1.5, 1.5), dpi=100)
+        ax = fig.add_subplot(111)
+        image = ax.imshow(plt.imread(relative_to_assets("image_10.png")))
+    ax.axis("off")
+    fig.tight_layout()
+    # Make the background transparent
+    fig.patch.set_facecolor('#F7F0CE')
+    canvas = FigureCanvasTkAgg(fig, master=canvas)
+    canvas.draw()
+    canvas.get_tk_widget().place(x=1050, y=300)
+    # Refresh the window
+    canvas.update()
+    return
 
 def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: DropdownApp):
     """
