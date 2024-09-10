@@ -12,6 +12,8 @@ import pandas as pd
 from utils.commands_gui_initialize import *
 from utils.commands_gui_ask_start import *
 from utils.widgets_gui_main_frame import DropdownApp
+import warnings
+warnings.filterwarnings("ignore")
 
 
 def set_sdw_dropdown(canvas: Canvas):
@@ -29,38 +31,54 @@ def set_sdw_dropdown(canvas: Canvas):
     sdw_dropdown = DropdownApp(canvas, 120, 130, sdw_options)
     return sdw_dropdown
 
-def plot_tide(window, sdw_selection: str):
+def plot_time_series(window: tk.Tk, sdw_selection: str, var: str):
     """
-    Plot the tide data.
+    Plot the Hs/Tide time series data.
 
     Parameters:
-    - None
+    - window (Tk): Tkinter window object.
+    - sdw_selection (str): Selected SDW.
+    - var (str): Variable to plot (Hs or Tide).
 
     Returns:
     - None
     """
     print("Plotting tide data...")
+    # Set the parameters for the selected variable to plot
+    var_params = {
+        "hs": ["Hs (m)", (565, 370)],
+        "tide": ["Tide (m)", (900, 370)]
+        }
     # Get the selected date SDW
     date_sdw = sdw_selection.split(" - ")[0]
     date_sdw = pd.to_datetime(date_sdw).floor("h")
     # Create the figure
     fig = Figure(figsize=(3, 1.5), dpi=100)
-    tide_plot = fig.add_subplot(111)
+    var_plot = fig.add_subplot(111)
+    # Check that the selected date is in the metocean data. If not, display a empty plot
+    if date_sdw not in metocean_df.index:
+        var_plot.set_title(f"No data for {date_sdw}")
+        # Create the Tkinter canvas
+        figure_canvas = FigureCanvasTkAgg(fig, master=window)
+        figure_canvas.draw()
+        # Place the canvas in the window
+        figure_canvas.get_tk_widget().place(x=var_params[var][1][0],
+                                            y=var_params[var][1][1])
+        return
     # Plot the tide data for the selected date
-    tide_plot.plot(metocean_df.loc[date_sdw].name,
-                   metocean_df.loc[date_sdw, "tide"],
-                   marker="o", lw=0, color="red", zorder=20)
+    var_plot.plot(metocean_df.loc[date_sdw].name,
+                  metocean_df.loc[date_sdw, var],
+                  marker="o", lw=0, color="red", zorder=20)
     # Plot a horizontal line at the selected SDW tide
-    tide_plot.axhline(y=metocean_df.loc[date_sdw, "tide"],
-                      color="red", ls="--", lw=0.5, zorder=15)
+    var_plot.axhline(y=metocean_df.loc[date_sdw, var],
+                     color="red", ls="--", lw=0.5, zorder=15)
     # Plot a horizontal line at the median tide level
-    tide_plot.axhline(y=metocean_df["tide"].median(), color="black", lw=0.5, zorder=10)
+    var_plot.axhline(y=metocean_df[var].median(), color="black", lw=0.5, zorder=10)
     # Plot the entire tide data
-    tide_plot.plot(metocean_df["tide"])
-    tide_plot.set_xlabel("Time")
-    tide_plot.set_ylabel("Tide (m)")
+    var_plot.plot(metocean_df[var])
+    var_plot.set_ylabel(var_params[var][0])
     # Rotate x-axis ticks labels
-    tide_plot.set_xticklabels(tide_plot.get_xticklabels(), rotation=45)
+    var_plot.set_xticklabels(var_plot.get_xticklabels(), rotation=45)
     # Tight layout
     fig.tight_layout()
     # Set the background transparent
@@ -68,8 +86,9 @@ def plot_tide(window, sdw_selection: str):
     # Create the Tkinter canvas
     figure_canvas = FigureCanvasTkAgg(fig, master=window)
     figure_canvas.draw()
-    # Place the canvas
-    figure_canvas.get_tk_widget().place(x=900, y=370)
+    # Place the canvas in the window
+    figure_canvas.get_tk_widget().place(x=var_params[var][1][0],
+                                        y=var_params[var][1][1])
         
     return
 
@@ -87,5 +106,7 @@ def command_plot_button(window: tk.Tk, sdw_dropdown: DropdownApp):
     # Get the selected SDW
     sdw_selection = sdw_dropdown.selected_option.get()
     # Plot the tide data
-    plot_tide(window, sdw_selection)
+    plot_time_series(window, sdw_selection, "tide")
+    # Plot the Hs data
+    plot_time_series(window, sdw_selection, "hs")
     return
