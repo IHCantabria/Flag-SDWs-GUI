@@ -118,18 +118,25 @@ def load_fc(gdb_path, fc_name):
 
 def create_out_csv(output_folder_path: str, sdw_fc: gpd.GeoDataFrame, transects_fc: gpd.GeoDataFrame):
     """
+    Create a CSV file with the most important information from the SDW and transects feature classes.
     
+    Parameters:
+    - output_folder_path (str): Path to the output folder.
+    - sdw_fc (GeoDataFrame): GeoDataFrame with the SDW feature class data.
+    - transects_fc (GeoDataFrame): GeoDataFrame with the transects feature class data.
+    
+    Returns:
+    - None
     """
-    # Create a new column in the SDW GeoDataFrame with the date and sensor information
-    #sdw_fc["date-sensor"] = sdw_fc["date"] + " - " + sdw_fc["sensor"]
     # Compute the intersection between the SDW and transects feature classes
     # to know which transects are intersect each SDW
     intersected_fc = gpd.overlay(sdw_fc, transects_fc, how="intersection", keep_geom_type=False)
-    # Create a CSV file with the date-sensor information
+    # Create a CSV file with the most important information
     out_csv_path = os.path.join(output_folder_path, "flag_sdw_output.csv")
     intersected_fc[["date", "transect_id", "sensor"]].to_csv(out_csv_path, index=False)
     
-
+    return
+    
 def start_button(entries_widgets: list, in_files: dict, window: Tk):
     """
     Function to be executed when the Start button is clicked.
