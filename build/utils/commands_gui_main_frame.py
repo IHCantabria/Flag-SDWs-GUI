@@ -12,7 +12,7 @@ import geopandas as gpd
 import pandas as pd
 from utils.commands_gui_initialize import *
 from utils.commands_gui_ask_start import *
-from utils.widgets_gui_main_frame import DropdownApp
+from utils.widgets_gui_main_frame import DropdownApp, MapBrowserApp
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -198,5 +198,7 @@ def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: DropdownApp
     show_flood_ebb(canvas, sdw_selection)
     # Show the SDW data
     show_sdw_data(window, sdw_selection)
+    # Create the map browser
+    map_browser = MapBrowserApp(sdw_selection)
     
     return

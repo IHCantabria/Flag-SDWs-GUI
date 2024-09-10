@@ -2,12 +2,16 @@ import tkinter as tk
 from tkinter import ttk
 from utils.commands_gui_initialize import *
 from utils.commands_gui_ask_start import *
+from pyproj import Transformer
 import folium
+import geopandas as gpd
 from folium import GeoJson
-import rasterio
+import rasterio as rio
 import pandas as pd
 import numpy as np
 from pathlib import Path
+import os
+import webbrowser
 
 class DropdownApp():
     def __init__(self, canvas, x, y, options):
@@ -79,25 +83,57 @@ class DropdownApp():
         for index in self.selected_options:
             self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
             
-class MapBrowser():
+class MapBrowserApp():
     def __init__(self, sdw_selection: str):
         self.sdw_selection = sdw_selection
         # Create the map object
         self.map = folium.Map(location=[-34.61, -58.38], zoom_start=12)
         # Add the SDW fc to the map
-        GeoJson(sdw_fc).add_to(self.map)
-        # Ad the transects fc to the map
-        GeoJson(transects_fc).add_to(self.map)
+        self.add_sdw_fc()
+        # Add the transects fc to the map
+        self.add_transects_fc()
         # Plot the raster
-        self.plot_raster(file_path)
+        self.plot_raster()
+        # Open the map on the browser
+        self.open_map()
         
     def _check_map(self):
         """
         Check if there is a map already loaded on the browser and close it.
         """
         
-        
-    def plot_raster(self, file_path: str):
+    def add_sdw_fc(self):
+        """
+        Add the SDW fc to the map.
+        """
+        # Get the selected SDW
+        date_sdw = self.sdw_selection.split(" - ")[0]
+        sensor_sdw = self.sdw_selection.split(" - ")[1]
+        # Add the SDW fc to the map
+        sdw_fc_row = sdw_fc[(sdw_fc["date"] == date_sdw) & (sdw_fc["sensor"] == sensor_sdw)]
+        GeoJson(sdw_fc_row, name=f"SDW {date_sdw}").add_to(self.map)
+
+    def add_transects_fc(self):
+        """
+        Add the transects fc to the map.
+        """
+        GeoJson(transects_fc, name="Transects").add_to(self.map)
+        # Show the transects id as labels on the map
+        for i in transects_fc.index:
+            folium.Marker(
+                location=[transects_fc.loc[i, "geometry"].centroid.y,
+                          transects_fc.loc[i, "geometry"].centroid.x],
+                popup=f"Transect ID {i}",
+                icon=folium.Icon(color="red", icon="info-sign")
+            ).add_to(self.map)
+    
+    def add_alpha(self, rgb_img):
+        alpha_channel = np.ones((rgb_img.shape[1], rgb_img.shape[2]))  # create a new alpha channel of shape (2004, 2044) with all values set to 1
+        alpha_channel[(rgb_img[0] == 0) & (rgb_img[1] == 0) & (rgb_img[2] == 0)] = 0 # set alpha values to 0 for pixels where all RGB values are 0
+        rgba_image = np.concatenate((rgb_img, alpha_channel[np.newaxis, :, :]), axis=0) # concatenate the alpha channel with the RGB image along the first dimension to create a RGBA image
+        return rgba_image
+    
+    def plot_raster(self):
         """
         Read the raster file and return the data.
         """
@@ -106,15 +142,74 @@ class MapBrowser():
         date_sdw = pd.to_datetime(date_sdw).strftime("%Y-%m-%d")
         sensor_sdw = self.sdw_selection.split(" - ")[1]
         # Get the raster file name
-        raster_file_name = Path.joinpath(rgb_folder_path, f"{date_sdw}-{sensor_sdw}.tif")
+        raster_file_name = os.path.join(rgb_folder_path, f"{date_sdw}-{sensor_sdw}.tif")
         # Read the raster file
-        with rasterio.open(raster_file_name) as src:
+        
+        dst_crs = 'EPSG:4326'
+        with rio.open(raster_file_name) as src:
+            r, g, b = src.read()
+            # Stack the bands
+            rgb = np.dstack((r, g, b))
+            # Normalize the bands
+            rgb = (rgb / np.max(rgb)) * 255
+            rgb = rgb.astype(np.uint8)
+            src_crs = src.crs['init'].upper()
+            min_lon, min_lat, max_lon, max_lat = src.bounds
+            
+        # Conversion from UTM to WGS84 CRS
+        bounds_orig = [[min_lat, min_lon], [max_lat, max_lon]]
+        bounds_fin = []
+        
+        for item in bounds_orig:   
+            #converting to lat/lon
+            lat = item[0]
+            lon = item[1]
+            
+            proj = Transformer.from_crs(int(src_crs.split(":")[1]), int(dst_crs.split(":")[1]), always_xy=True)
+            lon_n, lat_n = proj.transform(lon, lat)
+            
+            bounds_fin.append([lat_n, lon_n])
+
+        # Overlay raster (RGB) called img using add_child() function (opacity and bounding box set)
+        self.map.add_child(folium.raster_layers.ImageOverlay(rgb,
+                                                             name='RGB',
+                                                             opacity=.7,
+                                                             bounds=bounds_fin))
+        # Center the map on the raster
+        self.map.fit_bounds(bounds_fin)
+        folium.LayerControl().add_to(self.map)
+        #rgba_image = self.add_alpha(rgb_img)
+        
+        """
+        with rio.open(
+            os.path.join(rgb_folder_path, "test.tif"),
+            'w',
+            driver='GTiff',
+            height=height,
+            width=width,
+            count=count,
+            dtype=rgba_image.dtype,
+            transform=transform
+        ) as dst:
+            # Write the NumPy array to the rasterio dataset
+            dst.crs = rio.crs.CRS.from_epsg(4326)
+            dst.write(rgba_image)
+            # Add the raster to the map
+            folium.raster_layers.ImageOverlay(
+                image=rgba_image,
+                bounds=[[bounds.bottom, bounds.left], [bounds.top, bounds.right]],
+                opacity=0.5
+            ).add_to(self.map)"""
+        """
+        with rio.open(raster_file_name, "w") as src:
+            # Transform the projection to EPSG 4326
+            src.crs = rio.crs.CRS.from_epsg(4326)
             # Read the 3 bands RGB
             r, g, b = src.read()
             # Stack the bands
             rgb = np.dstack((r, g, b))
             # Normalize the bands
-            rgb = rgb / rgb.max()
+            #rgb = rgb / rgb.max()
             # Get the bounds
             bounds = src.bounds
             # Add the raster to the map
@@ -122,5 +217,13 @@ class MapBrowser():
                 image=rgb,
                 bounds=[[bounds.bottom, bounds.left], [bounds.top, bounds.right]],
                 opacity=0.5
-            ).add_to(self.map)
+            ).add_to(self.map)"""
             
+    def open_map(self):
+        """
+        Open the map on the browser.
+        """
+        out_path = Path(input_info_file).parent.parent
+        map_path = os.path.join(out_path, "map.html")
+        self.map.save(map_path)
+        webbrowser.open(map_path)
