@@ -15,6 +15,13 @@ from utils.widgets_gui_main_frame import DropdownApp
 import warnings
 warnings.filterwarnings("ignore")
 
+OUTPUT_PATH = Path(__file__).parent.parent
+#ASSETS_PATH = OUTPUT_PATH / Path(r"D:\Repos Github\Flag-SDWs-GUI\build\assets\frame0")
+ASSETS_PATH = Path.joinpath(OUTPUT_PATH, "assets/frame2")
+
+def relative_to_assets(path: str) -> Path:
+    return ASSETS_PATH / Path(path)
+
 
 def set_sdw_dropdown(canvas: Canvas):
     """
@@ -43,7 +50,7 @@ def plot_time_series(window: tk.Tk, sdw_selection: str, var: str):
     Returns:
     - None
     """
-    print("Plotting tide data...")
+    print(f"Plotting {var} data...")
     # Set the parameters for the selected variable to plot
     var_params = {
         "hs": ["Hs (m)", (380, 310)],
@@ -92,7 +99,32 @@ def plot_time_series(window: tk.Tk, sdw_selection: str, var: str):
         
     return
 
-def command_plot_button(window: tk.Tk, sdw_dropdown: DropdownApp):
+def show_flood_ebb(canvas: Canvas, sdw_selection: str):
+    """
+    Show an image of flood or ebb tide whether the selected SDW is in flood or ebb tide.
+    
+    Parameters:
+    - window (Tk): Tkinter window object.
+    - sdw_selection (str): Selected SDW.
+    
+    Returns:
+    - None
+    """
+    # Get the selected date SDW
+    date_sdw = sdw_selection.split(" - ")[0]
+    date_sdw = pd.to_datetime(date_sdw).floor("h")
+    # Check the previous tide level to determine if the tide is in flood or ebb
+    if metocean_df.loc[date_sdw, "tide"] > metocean_df.loc[date_sdw - pd.Timedelta(hours=1), "tide"]:
+        # Plot the flood tide image
+        image_image = PhotoImage(file=relative_to_assets("image_9.png"))
+        image = canvas.create_image(1100.0, 364.0, image=image_image)
+    else:
+        # Plot the ebb tide image
+        image_image = PhotoImage(file=relative_to_assets("image_10.png"))
+        image = canvas.create_image(1100.0, 364.0, image=image_image)
+    
+
+def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: DropdownApp):
     """
     Command to be executed when the "Plot" button is clicked.
 
@@ -109,4 +141,6 @@ def command_plot_button(window: tk.Tk, sdw_dropdown: DropdownApp):
     plot_time_series(window, sdw_selection, "tide")
     # Plot the Hs data
     plot_time_series(window, sdw_selection, "hs")
+    # Show the flood or ebb tide image
+    show_flood_ebb(canvas, sdw_selection)
     return
