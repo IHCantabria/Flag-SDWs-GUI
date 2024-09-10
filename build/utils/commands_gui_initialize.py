@@ -173,6 +173,10 @@ def start_button(entries_widgets: list, in_files: dict, window: Tk):
         in_files_dict = {in_files_names[key]: in_files[key] for key in in_files}
         entries_fc_dict = {entry_names[key]: entries_fc[key] for key in entries_fc}
         
+        # Create a global variable with the RGB folder path
+        global rgb_folder_path
+        rgb_folder_path = in_files_dict["RGB Folder Path"]
+        
         # Load the CSV file and the feature class
         global metocean_df, sdw_fc, transects_fc
         metocean_df = load_csv(in_files_dict["Metocean CSV File"])

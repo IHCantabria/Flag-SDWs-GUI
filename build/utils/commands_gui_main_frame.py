@@ -139,6 +139,44 @@ def show_flood_ebb(canvas: Canvas, sdw_selection: str):
     
     return
 
+def show_sdw_data(window: tk.Tk, sdw_selection: str):
+    """
+    
+    """
+    # Get the selected SDW
+    date_sdw = sdw_selection.split(" - ")[0]
+    sensor_sdw = sdw_selection.split(" - ")[1]
+    # Check that the SDW feature class has the extra columns
+    extra_cols = ["algorithm", "index", "threshold"]
+    # Check that the extra_cols exist in the sdw_fc GeoDataFrame, otherwise create them with NaN values
+    for col in extra_cols:
+        if col not in sdw_fc.columns:
+            sdw_fc[col] = "NaN"
+    # Get the selected row of the sdw_fc GeoDataFrame
+    sdw_fc_row = sdw_fc[(sdw_fc["date"] == date_sdw) & (sdw_fc["sensor"] == sensor_sdw)]
+    # Turn uppercase all columns
+    sdw_fc_row.columns = sdw_fc_row.columns.str.upper()
+    # Create a matplotlib table with the selected SDW data
+    table_cols = ["DATE", "SENSOR", "ALGORITHM", "INDEX", "THRESHOLD"]
+    fig, ax = plt.subplots(figsize=(8, 1))
+    ax.axis("off")
+    table_data = sdw_fc_row[table_cols].values
+    table = ax.table(cellText=table_data, colLabels=table_cols,
+                     loc="center", cellLoc="center", colLoc="center",
+                     cellColours=[["#F7F0CE"]*5]*len(table_data))
+    table.auto_set_font_size(False)
+    table.set_fontsize(8)
+    table.scale(1.5, 1.5)
+    fig.tight_layout()
+    fig.patch.set_facecolor('#F7F0CE')
+    # Create the Tkinter canvas
+    figure_canvas = FigureCanvasTkAgg(fig, master=window)
+    figure_canvas.draw()
+    # Place the canvas in the window
+    figure_canvas.get_tk_widget().place(x=410, y=67)
+    
+    return    
+
 def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: DropdownApp):
     """
     Command to be executed when the "Plot" button is clicked.
@@ -158,5 +196,7 @@ def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: DropdownApp
     plot_time_series(window, sdw_selection, "hs")
     # Show the flood or ebb tide image
     show_flood_ebb(canvas, sdw_selection)
+    # Show the SDW data
+    show_sdw_data(window, sdw_selection)
     
     return

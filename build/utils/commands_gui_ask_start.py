@@ -70,7 +70,9 @@ def read_input_info_file(input_info_file: str):
                 entries_fc_dict["SDW Feature Class Name"] = line.split(": ")[1].strip()
             elif "Transects Feature Class Name" in line:
                 entries_fc_dict["Transects Feature Class Name"] = line.split(": ")[1].strip()
-    
+    # Create a global variable with the RGB folder path
+    global rgb_folder_path
+    rgb_folder_path = in_files_dict["RGB Folder Path"]
     # Load the CSV file and the feature class
     global metocean_df, sdw_fc, transects_fc
     metocean_df = load_csv(in_files_dict["Metocean CSV File"])

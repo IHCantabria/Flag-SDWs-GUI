@@ -2,6 +2,12 @@ import tkinter as tk
 from tkinter import ttk
 from utils.commands_gui_initialize import *
 from utils.commands_gui_ask_start import *
+import folium
+from folium import GeoJson
+import rasterio
+import pandas as pd
+import numpy as np
+from pathlib import Path
 
 class DropdownApp():
     def __init__(self, canvas, x, y, options):
@@ -72,3 +78,49 @@ class DropdownApp():
         # Change the background color of the selected options
         for index in self.selected_options:
             self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
+            
+class MapBrowser():
+    def __init__(self, sdw_selection: str):
+        self.sdw_selection = sdw_selection
+        # Create the map object
+        self.map = folium.Map(location=[-34.61, -58.38], zoom_start=12)
+        # Add the SDW fc to the map
+        GeoJson(sdw_fc).add_to(self.map)
+        # Ad the transects fc to the map
+        GeoJson(transects_fc).add_to(self.map)
+        # Plot the raster
+        self.plot_raster(file_path)
+        
+    def _check_map(self):
+        """
+        Check if there is a map already loaded on the browser and close it.
+        """
+        
+        
+    def plot_raster(self, file_path: str):
+        """
+        Read the raster file and return the data.
+        """
+        # Get the date and sensor from the selected SDW
+        date_sdw = self.sdw_selection.split(" - ")[0]
+        date_sdw = pd.to_datetime(date_sdw).strftime("%Y-%m-%d")
+        sensor_sdw = self.sdw_selection.split(" - ")[1]
+        # Get the raster file name
+        raster_file_name = Path.joinpath(rgb_folder_path, f"{date_sdw}-{sensor_sdw}.tif")
+        # Read the raster file
+        with rasterio.open(raster_file_name) as src:
+            # Read the 3 bands RGB
+            r, g, b = src.read()
+            # Stack the bands
+            rgb = np.dstack((r, g, b))
+            # Normalize the bands
+            rgb = rgb / rgb.max()
+            # Get the bounds
+            bounds = src.bounds
+            # Add the raster to the map
+            folium.raster_layers.ImageOverlay(
+                image=rgb,
+                bounds=[[bounds.bottom, bounds.left], [bounds.top, bounds.right]],
+                opacity=0.5
+            ).add_to(self.map)
+            
