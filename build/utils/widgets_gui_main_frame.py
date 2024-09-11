@@ -116,6 +116,24 @@ class DropdownApp():
         # Change the background color of the selected options
         for index in self.selected_options:
             self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
+    
+    def select_all(self):
+        # Select all the options
+        self.dropdown_listbox.select_set(0, tk.END)
+        # Update the selected options
+        self.selected_options = list(range(len(self.options)))
+        # Update the selected option
+        self.selected_option.set(self.options)
+        print(f"Selected: {self.selected_option.get()}")
+    
+    def deselect_all(self):
+        # Deselect all the options
+        self.dropdown_listbox.selection_clear(0, tk.END)
+        # Clear the selected options
+        self.selected_options.clear()
+        # Update the selected option
+        self.selected_option.set("")
+        print(f"Selected: {self.selected_option.get()}")
 
 
 class MapBrowserApp():

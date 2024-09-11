@@ -23,7 +23,6 @@ ASSETS_PATH = Path.joinpath(OUTPUT_PATH, "assets/frame2")
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
-
 def set_sdw_dropdown(canvas: Canvas):
     """
     Set the dropdown menu for the SDW selection.
@@ -36,9 +35,81 @@ def set_sdw_dropdown(canvas: Canvas):
     """
     # Set the SDW dropdown menu
     sdw_options = [f"{sdw_fc.iloc[i]['date']} - {sdw_fc.iloc[i]['sensor']}" for i in sdw_fc.index]
-    sdw_dropdown = DropdownApp(canvas, 80, 110, sdw_options)
+    sdw_dropdown = DropdownApp("SDW", canvas, 80, 110, sdw_options)
     
     return sdw_dropdown
+
+def command_select_all_button():
+    """
+    Command to be executed when the "Select All" button is clicked.
+
+    Parameters:
+    - transect_id_dropdown (DropdownApp): DropdownApp object.
+
+    Returns:
+    - None
+    """
+    # Select all the transect IDs
+    transect_id_dropdown.select_all()
+
+    return
+
+def command_deselect_all_button():
+    """
+    Command to be executed when the "Deselect All" button is clicked.
+
+    Parameters:
+    - transect_id_dropdown (DropdownApp): DropdownApp object.
+
+    Returns:
+    - None
+    """
+    # Deselect all the transect IDs
+    transect_id_dropdown.deselect_all()
+
+    return
+
+def set_transect_id_dropdown(canvas: Canvas, sdw_selection: str):
+    """
+    Set the dropdown menu for the transect ID selection.
+
+    Parameters:
+    - canvas (Canvas): Canvas object to place the dropdown menu.
+    - sdw_selection (str): Selected SDW.
+
+    Returns:
+    - None
+    """
+    # Find the transects for the selected SDW in the flag_sdw_output.CSV file
+    date_sdw = sdw_selection.split(" - ")[0]
+    sensor_sdw = sdw_selection.split(" - ")[1]
+    transects_sdw = out_csv_df.loc[(out_csv_df["date"] == date_sdw) & (out_csv_df["sensor"] == sensor_sdw),
+                                   "transect_id"].values
+    # Set the transect ID dropdown menu
+    transect_id_options = transects_sdw.tolist()
+    transect_id_dropdown = DropdownApp("Transect ID", canvas, 85, 632, transect_id_options)
+    
+    return transect_id_dropdown
+
+def set_type_indicator_dropdown(canvas: Canvas):
+    """
+    Set the dropdown menu for the type indicator selection.
+
+    Parameters:
+    - canvas (Canvas): Canvas object to place the dropdown menu.
+
+    Returns:
+    - None
+    """
+    # Set the type indicator dropdown menu
+    type_indicator_options = [
+        "1- Waterline", "2- Wave run-up", "3- Max. High Tide Level", "4- Previous Higher Water Level",
+        "5- Intertidal Water", "6- Backshore elements (e.g. vegetation shadow)",
+        "7- N/A"
+        ]
+    type_indicator_dropdown = DropdownApp("Type Indicator", canvas, 80, 590, type_indicator_options)
+    
+    return type_indicator_dropdown
 
 def plot_time_series(window: tk.Tk, sdw_selection: str, var: str):
     """
@@ -200,5 +271,8 @@ def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: DropdownApp
     show_sdw_data(window, sdw_selection)
     # Create the map browser
     map_browser = MapBrowserApp(sdw_selection)
+    # Create the Transect ID dropdown menu
+    global transect_id_dropdown
+    transect_id_dropdown = set_transect_id_dropdown(canvas, sdw_selection)
     
     return
