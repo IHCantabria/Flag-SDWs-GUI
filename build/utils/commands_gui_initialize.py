@@ -134,6 +134,9 @@ def create_out_csv(output_folder_path: str, sdw_fc: gpd.GeoDataFrame, transects_
     # Create a CSV file with the most important information
     out_csv_path = os.path.join(output_folder_path, "flag_sdw_output.csv")
     intersected_fc[["date", "transect_id", "sensor"]].to_csv(out_csv_path, index=False)
+    # Create a global DataFrame variable with the output CSV file
+    global out_csv_df
+    out_csv_df = pd.read_csv(out_csv_path)
     
     return
     
