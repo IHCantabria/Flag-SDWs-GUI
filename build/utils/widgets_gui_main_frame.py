@@ -54,6 +54,8 @@ class DropdownApp():
         # Create a scrollbar
         scrollbar = ttk.Scrollbar(dropdown_frame, orient=tk.VERTICAL)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        # 
 
         # Create a listbox with the options and associate it with the scrollbar
         self.dropdown_listbox = tk.Listbox(dropdown_frame, height=17, listvariable=tk.StringVar(value=self.options),
@@ -69,27 +71,28 @@ class DropdownApp():
         selected_index = self.dropdown_listbox.curselection()
         
         if selected_index:
+            # Get the index of the selected option
             index = selected_index[0]
             
             # The change of the background color is only applied when the name parameter is "SDW" or "Transect ID"
-            if self.name == "SDW" or self.name == "Transect ID":
+            if self.name == "SDW":
                 if index not in self.selected_options:
                     self.selected_options.append(index)
                     # Change the background color of the selected option
                     self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
+                # Update the selected colors
+                self.update_selected_colors()
             
             # Update the selected option    
             self.selected_option.set(self.options[selected_index[0]])
             print(f"Selected: {self.selected_option.get()}")
-            if self.name == "SDW" or self.name == "Transect ID":
-                # Update the selected colors
-                self.update_selected_colors()
-            
+
     def update_selected_colors(self):
         # Change the background color of the selected options
         for index in self.selected_options:
             self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
-            
+
+
 class MapBrowserApp():
     def __init__(self, sdw_selection: str):
         self.sdw_selection = sdw_selection
