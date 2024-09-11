@@ -43,7 +43,9 @@ def no_button_clicked(window: Tk):
     input_info_file = filedialog.askopenfilename(filetypes=[("input_info TXT file", "*.txt")])
     read_input_info_file(input_info_file)
     # Read the output CSV file created in the initialization GUI
-    read_out_csv_file(Path(input_info_file).parent.parent / "flag_sdw_output.csv")
+    global out_csv_path
+    out_csv_path = Path(input_info_file).parent.parent
+    read_out_csv_file(out_csv_path / "flag_sdw_output.csv")
     window.destroy()
     return
 

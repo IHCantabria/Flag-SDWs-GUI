@@ -83,10 +83,10 @@ class DropdownApp():
             # Get the selected option
             selected_index = self.dropdown_listbox.curselection()
             # Clear the previous selected option
-            self.selected_options = []
+            self.selected_options.clear()
             # Update the list of selected options
             self.selected_options.append(selected_index[0])
-            # Update the selected option    
+            # Update the selected option
             self.selected_option.set(self.options[selected_index[0]])
             print(f"{self.name} Selected: {self.selected_option.get()}")
             self.update_selected_colors()
@@ -96,7 +96,7 @@ class DropdownApp():
             selected_indices = self.dropdown_listbox.curselection()
             
             # Clear the previous selected options
-            self.selected_options = []
+            self.selected_options.clear()
             
             # Update the list of selected options
             for index in selected_indices:
@@ -140,6 +140,231 @@ class DropdownApp():
         self.update_selected_colors()
         print(f"Selected: {self.selected_option.get()}")
 
+
+class SDWDropdownApp():
+    def __init__(self, canvas, options):
+        
+        # Create a canvas
+        self.canvas = canvas
+
+        # List of options
+        #self.options = [f"Option {i}" for i in range(1, 51)]  # Example with 50 options
+        self.options = options
+        
+        # List of selected options
+        self.selected_options = []
+
+        # Variable to store the selected option
+        self.selected_option = tk.StringVar()
+
+        # Create a Frame to contain the dropdown menu and scrollbar
+        self.frame = ttk.Frame(self.canvas)
+        # self.frame.pack(pady=20)
+
+        # Create the dropdown menu with scrollbar
+        self.create_dropdown()
+        
+        # Locate the Frame object in the canvas at the specified position
+        self.canvas.create_window(80, 110, window=self.frame, anchor="nw")
+
+    def create_dropdown(self):
+        # Frame that contains the dropdown menu and scrollbar
+        dropdown_frame = ttk.Frame(self.frame)
+        dropdown_frame.pack()
+
+        # Create a scrollbar
+        scrollbar = ttk.Scrollbar(dropdown_frame, orient=tk.VERTICAL)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        # Create a listbox with the options and associate it with the scrollbar
+        self.dropdown_listbox = tk.Listbox(dropdown_frame, height=17, width=25, 
+                                           listvariable=tk.StringVar(value=self.options),
+                                           selectmode=tk.SINGLE, yscrollcommand=scrollbar.set)
+        self.dropdown_listbox.pack(side=tk.LEFT, fill=tk.BOTH)
+        scrollbar.config(command=self.dropdown_listbox.yview)
+
+        # Bind the selection of the dropdown menu to the selected variable
+        self.dropdown_listbox.bind('<<ListboxSelect>>', self.on_select)
+
+    def on_select(self, event):
+        # Get the selected option
+        selected_index = self.dropdown_listbox.curselection()
+        # Clear the previous selected option
+        self.selected_options.clear()
+        # Update the list of selected options
+        self.selected_options.append(selected_index[0])
+        # Update the selected option
+        self.selected_option.set(self.options[selected_index[0]])
+        print(f"SDW Selected: {self.selected_option.get()}")
+        self.update_selected_colors()
+            
+    def update_selected_colors(self):
+        # Change the background color of the selected options
+        for index in range(len(self.options)):
+            if index in self.selected_options:
+                self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
+            else:
+                self.dropdown_listbox.itemconfig(index, {'bg': 'white'})
+
+class TransectsDropdownApp():
+    def __init__(self, canvas, options):
+
+        # Create a canvas
+        self.canvas = canvas
+
+        # List of options
+        #self.options = [f"Option {i}" for i in range(1, 51)]  # Example with 50 options
+        self.options = options
+        
+        # List of selected options
+        self.selected_options = []
+
+        # Variable to store the selected option
+        self.selected_option = tk.StringVar()
+
+        # Create a Frame to contain the dropdown menu and scrollbar
+        self.frame = ttk.Frame(self.canvas)
+        # self.frame.pack(pady=20)
+
+        # Create the dropdown menu with scrollbar
+        self.create_dropdown()
+        
+        # Locate the Frame object in the canvas at the specified position
+        self.canvas.create_window(85, 632, window=self.frame, anchor="nw")
+
+    def create_dropdown(self):
+        # Frame that contains the dropdown menu and scrollbar
+        dropdown_frame = ttk.Frame(self.frame)
+        dropdown_frame.pack()
+
+        # Create a scrollbar
+        scrollbar = ttk.Scrollbar(dropdown_frame, orient=tk.VERTICAL)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Create a listbox with the options and associate it with the scrollbar
+        self.dropdown_listbox = tk.Listbox(dropdown_frame, height=7, width=10, 
+                                           listvariable=tk.StringVar(value=self.options),
+                                           selectmode=tk.MULTIPLE, yscrollcommand=scrollbar.set)
+        self.dropdown_listbox.pack(side=tk.LEFT, fill=tk.BOTH)
+        scrollbar.config(command=self.dropdown_listbox.yview)
+
+        # Bind the selection of the dropdown menu to the selected variable
+        self.dropdown_listbox.bind('<<ListboxSelect>>', self.on_select)
+
+    def on_select(self, event):       
+        # Multiple selection
+        # Get the selected options
+        selected_indices = self.dropdown_listbox.curselection()
+        
+        # Clear the previous selected options
+        self.selected_options.clear()
+        
+        # Update the list of selected options
+        for index in selected_indices:
+            self.selected_options.append(index)
+
+        # Print the selected options
+        selected_options = [self.options[index] for index in self.selected_options]
+        self.selected_option.set(selected_options)
+        print(f"Transects Selected: {self.selected_option.get()}")
+        
+        # Change the background color of the selected options
+        self.update_selected_colors()
+            
+    def update_selected_colors(self):
+        # Change the background color of the selected options
+        for index in range(len(self.options)):
+            if index in self.selected_options:
+                self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
+            else:
+                self.dropdown_listbox.itemconfig(index, {'bg': 'white'})
+        
+    def select_all(self):
+        # Select all the options
+        self.dropdown_listbox.select_set(0, tk.END)
+        # Update the selected options
+        self.selected_options = list(range(len(self.options)))
+        # Update the selected option
+        self.selected_option.set(self.options)
+        # Change the background color of the selected options
+        self.update_selected_colors()
+        print(f"Transects Selected: {self.selected_option.get()}")
+    
+    def deselect_all(self):
+        # Deselect all the options
+        self.dropdown_listbox.selection_clear(0, tk.END)
+        # Clear the selected options
+        self.selected_options.clear()
+        # Update the selected option
+        self.selected_option.set("")
+        # Change the background color of the selected options   
+        self.update_selected_colors()
+        print(f"Transects Selected: {self.selected_option.get()}")
+    
+class TypeIndicatorDropdownApp():
+    def __init__(self, canvas, options):
+        
+        # Create a canvas
+        self.canvas = canvas
+
+        # List of options
+        #self.options = [f"Option {i}" for i in range(1, 51)]  # Example with 50 options
+        self.options = options
+        
+        # List of selected options
+        self.selected_options = []
+
+        # Variable to store the selected option
+        self.selected_option = tk.StringVar()
+
+        # Create a Frame to contain the dropdown menu and scrollbar
+        self.frame = ttk.Frame(self.canvas)
+        # self.frame.pack(pady=20)
+
+        # Create the dropdown menu with scrollbar
+        self.create_dropdown()
+        
+        # Locate the Frame object in the canvas at the specified position
+        self.canvas.create_window(350, 650, window=self.frame, anchor="nw")
+
+    def create_dropdown(self):
+        # Frame that contains the dropdown menu and scrollbar
+        dropdown_frame = ttk.Frame(self.frame)
+        dropdown_frame.pack()
+
+        # Create a scrollbar
+        scrollbar = ttk.Scrollbar(dropdown_frame, orient=tk.VERTICAL)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        # Create a listbox with the options and associate it with the scrollbar
+        self.dropdown_listbox = tk.Listbox(dropdown_frame, height=5, width=42, 
+                                           listvariable=tk.StringVar(value=self.options),
+                                           selectmode=tk.SINGLE, yscrollcommand=scrollbar.set)
+        self.dropdown_listbox.pack(side=tk.LEFT, fill=tk.BOTH)
+        scrollbar.config(command=self.dropdown_listbox.yview)
+
+        # Bind the selection of the dropdown menu to the selected variable
+        self.dropdown_listbox.bind('<<ListboxSelect>>', self.on_select)
+
+    def on_select(self, event):
+        # Get the selected option
+        selected_index = self.dropdown_listbox.curselection()
+        # Clear the previous selected option
+        self.selected_options.clear()
+        # Update the list of selected options
+        self.selected_options.append(selected_index[0])
+        # Update the selected option
+        self.selected_option.set(self.options[selected_index[0]])
+        print(f"SDW Selected: {self.selected_option.get()}")
+        self.update_selected_colors()
+            
+    def update_selected_colors(self):
+        # Change the background color of the selected options
+        for index in range(len(self.options)):
+            if index in self.selected_options:
+                self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
+            else:
+                self.dropdown_listbox.itemconfig(index, {'bg': 'white'})
 
 class MapBrowserApp():
     def __init__(self, sdw_selection: str):

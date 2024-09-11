@@ -48,6 +48,7 @@ canvas = Canvas(
 canvas.place(x = 0, y = 0)
 
 # Create a dropdown menu, single selection
+global sdw_dropdown
 sdw_dropdown = set_sdw_dropdown(canvas)
 # Get the selected SDW
 sdw_dropdown_selected = sdw_dropdown.selected_option.get()
@@ -178,7 +179,7 @@ button_2 = Button(
     image=button_image_2,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_2 clicked"),
+    command=lambda: command_save_sdw_button(sdw_dropdown),
     relief="flat"
 )
 button_2.place(

@@ -12,7 +12,7 @@ import geopandas as gpd
 import pandas as pd
 from utils.commands_gui_initialize import *
 from utils.commands_gui_ask_start import *
-from utils.widgets_gui_main_frame import DropdownApp, MapBrowserApp
+from utils.widgets_gui_main_frame import SDWDropdownApp, TransectsDropdownApp, TypeIndicatorDropdownApp, MapBrowserApp
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -35,7 +35,7 @@ def set_sdw_dropdown(canvas: Canvas):
     """
     # Set the SDW dropdown menu
     sdw_options = [f"{sdw_fc.iloc[i]['date']} - {sdw_fc.iloc[i]['sensor']}" for i in sdw_fc.index]
-    sdw_dropdown = DropdownApp("SDW", canvas, 80, 110, sdw_options)
+    sdw_dropdown = SDWDropdownApp(canvas, sdw_options)
     
     return sdw_dropdown
 
@@ -87,7 +87,7 @@ def set_transect_id_dropdown(canvas: Canvas, sdw_selection: str):
                                    "transect_id"].values
     # Set the transect ID dropdown menu
     transect_id_options = transects_sdw.tolist()
-    transect_id_dropdown = DropdownApp("Transect ID", canvas, 85, 632, transect_id_options)
+    transect_id_dropdown = TransectsDropdownApp(canvas, transect_id_options)
     
     return transect_id_dropdown
 
@@ -107,10 +107,10 @@ def set_type_indicator_dropdown(canvas: Canvas):
         "5- Intertidal Water", "6- Backshore elements (e.g. vegetation shadow)",
         "7- N/A"
         ]
-    type_indicator_dropdown = DropdownApp("Type Indicator", canvas, 350, 650, type_indicator_options)
+    type_indicator_dropdown = TypeIndicatorDropdownApp(canvas, type_indicator_options)
     # Preselect the first option
-    type_indicator_dropdown.dropdown_listbox.select_set(0)
-    type_indicator_dropdown.selected_option.set(type_indicator_options[0])
+    #type_indicator_dropdown.dropdown_listbox.select_set(0)
+    #type_indicator_dropdown.selected_option.set(type_indicator_options[0])
     
     return type_indicator_dropdown
 
@@ -251,13 +251,13 @@ def show_sdw_data(window: tk.Tk, sdw_selection: str):
     
     return    
 
-def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: DropdownApp):
+def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: SDWDropdownApp):
     """
     Command to be executed when the "Plot" button is clicked.
 
     Parameters:
     - window (Tk): Tkinter window object.
-    - sdw_dropdown (DropdownApp): DropdownApp object.
+    - sdw_dropdown (SDWDropdownApp): SDWDropdownApp object.
 
     Returns:
     - None
@@ -273,12 +273,40 @@ def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: DropdownApp
     # Show the SDW data
     show_sdw_data(window, sdw_selection)
     # Create the map browser
-    map_browser = MapBrowserApp(sdw_selection)
+    #map_browser = MapBrowserApp(sdw_selection)
     # Create the Transect ID dropdown menu
     global transect_id_dropdown
     transect_id_dropdown = set_transect_id_dropdown(canvas, sdw_selection)
     # Create the Type Indicator dropdown menu
     global type_indicator_dropdown
     type_indicator_dropdown = set_type_indicator_dropdown(canvas)
+    
+    return
+
+def command_save_sdw_button(sdw_dropdown):
+    """
+    Command to be executed when the "Save SDW" button is clicked.
+
+    Parameters:
+    - None
+
+    Returns:
+    - None
+    """
+    # Get the selected SDW
+    sdw_selection = sdw_dropdown.selected_option.get()
+    # Get the selected date and sensor
+    date_sdw = sdw_selection.split(" - ")[0]
+    sensor_sdw = sdw_selection.split(" - ")[1]
+    
+    # Update the out_csv_df with the selected type indicator
+    out_csv_df.loc[(out_csv_df["date"] == date_sdw) & (out_csv_df["sensor"] == sensor_sdw),
+                   "type_indicator"] = type_indicator_dropdown.selected_option.get()
+    # Update the out_csv_df with the selected level of confidence
+    out_csv_df.loc[(out_csv_df["date"] == date_sdw) & (out_csv_df["sensor"] == sensor_sdw),
+                   "level_confidence"] = "High"
+    # Save the out_csv_df to the output CSV file
+    out_csv_df.to_csv(out_csv_path, index=False)
+    print("SDW saved.")
     
     return
