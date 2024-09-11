@@ -9,7 +9,7 @@ from pathlib import Path
 # Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, messagebox
 from utils.commands_gui_initialize import *
-from utils.commands_gui_main_frame import set_sdw_dropdown, command_plot_button
+from utils.commands_gui_main_frame import *
 
 OUTPUT_PATH = Path(__file__).parent
 #ASSETS_PATH = OUTPUT_PATH / Path(r"D:\Repos Github\Flag-SDWs-GUI\build\assets\frame0")
@@ -51,6 +51,10 @@ canvas.place(x = 0, y = 0)
 sdw_dropdown = set_sdw_dropdown(canvas)
 # Get the selected SDW
 sdw_dropdown_selected = sdw_dropdown.selected_option.get()
+
+# Get the transect IDs for the selected SDW
+"""if sdw_dropdown_selected is not None:
+    transect_id_dropdown = set_transect_id_dropdown(canvas, sdw_dropdown_selected)"""
 
 image_image_1 = PhotoImage(
     file=relative_to_assets("image_1.png"))
@@ -178,10 +182,42 @@ button_2 = Button(
     relief="flat"
 )
 button_2.place(
-    x=917.0,
-    y=606.0,
-    width=167.0,
-    height=123.0
+    x=926.0,
+    y=622.0,
+    width=130.0,
+    height=80.0
+)
+
+button_image_3 = PhotoImage(
+    file=relative_to_assets("button_3.png"))
+button_3 = Button(
+    image=button_image_3,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: command_select_all_button(),
+    relief="flat"
+)
+button_3.place(
+    x=185.0,
+    y=663.0,
+    width=83.0,
+    height=27.0
+)
+
+button_image_4 = PhotoImage(
+    file=relative_to_assets("button_4.png"))
+button_4 = Button(
+    image=button_image_4,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: command_deselect_all_button(),
+    relief="flat"
+)
+button_4.place(
+    x=185.0,
+    y=695.0,
+    width=83.0,
+    height=27.0
 )
 
 canvas.create_text(
@@ -267,8 +303,8 @@ canvas.create_text(
 entry_image_1 = PhotoImage(
     file=relative_to_assets("entry_1.png"))
 entry_bg_1 = canvas.create_image(
-    1000.5,
-    749.0,
+    990.5,
+    723.0,
     image=entry_image_1
 )
 entry_1 = Text(
@@ -278,8 +314,8 @@ entry_1 = Text(
     highlightthickness=0
 )
 entry_1.place(
-    x=954.0,
-    y=737.0,
+    x=944.0,
+    y=711.0,
     width=93.0,
     height=22.0
 )
@@ -316,14 +352,14 @@ image_12 = canvas.create_image(
     image=image_image_12
 )
 
-image_image_13 = PhotoImage(
+"""image_image_13 = PhotoImage(
     file=relative_to_assets("image_13.png"))
 image_13 = canvas.create_image(
     176.0,
     692.0,
     image=image_image_13
 )
-
+"""
 image_image_14 = PhotoImage(
     file=relative_to_assets("image_14.png"))
 image_14 = canvas.create_image(
