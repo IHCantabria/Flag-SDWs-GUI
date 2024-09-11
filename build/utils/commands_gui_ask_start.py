@@ -2,9 +2,10 @@
 This file is intended to be a snippet of the GUI asking start code in gui_ask_start.py.
 The code in this file is intended to be used as a reference for the commands used of the two main elements (yes/no buttons).
 """
-
+from pathlib import Path
+import pandas as pd
 from tkinter import Tk, messagebox, filedialog
-from utils.commands_gui_initialize import load_csv, load_fc
+from utils.commands_gui_initialize import *
 
 def yes_button_clicked(window: Tk):
     """
@@ -41,6 +42,8 @@ def no_button_clicked(window: Tk):
     global input_info_file
     input_info_file = filedialog.askopenfilename(filetypes=[("input_info TXT file", "*.txt")])
     read_input_info_file(input_info_file)
+    # Read the output CSV file created in the initialization GUI
+    read_out_csv_file(Path(input_info_file).parent.parent / "flag_sdw_output.csv")
     window.destroy()
     return
 
@@ -79,4 +82,22 @@ def read_input_info_file(input_info_file: str):
     sdw_fc = load_fc(in_files_dict["File GDB Path"], entries_fc_dict["SDW Feature Class Name"])
     transects_fc = load_fc(in_files_dict["File GDB Path"], entries_fc_dict["Transects Feature Class Name"])
     print("Input info file read.")
+    
+    return
+
+def read_out_csv_file(out_csv_file: str):
+    """
+    Read the output CSV file created in the initialization GUI.
+    
+    Parameters:
+    - out_csv_file (str): Path to the output CSV file.
+    
+    Returns:
+    - None
+    """
+    # Read the output CSV file
+    global out_csv_df
+    out_csv_df = pd.read_csv(out_csv_file)
+    print("Output CSV file read.")
+    
     return
