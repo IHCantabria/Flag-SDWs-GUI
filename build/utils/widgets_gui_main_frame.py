@@ -14,10 +14,14 @@ import os
 import webbrowser
 
 class DropdownApp():
-    def __init__(self, canvas, x, y, options):
+    def __init__(self, name, canvas, x, y, options):
 
+        # Get the name of the dropdown menu
+        self.name = name
+        
         # Create a canvas
         self.canvas = canvas
+        
         # Specify the position of the dropdown menu
         self.x = x
         self.y = y
@@ -67,16 +71,19 @@ class DropdownApp():
         if selected_index:
             index = selected_index[0]
             
-            # Add the selected index to the list of selected options if it is not already there
-            if index not in self.selected_options:
-                self.selected_options.append(index)
-                self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'}) # Change the background color of the selected option
+            # The change of the background color is only applied when the name parameter is "SDW" or "Transect ID"
+            if self.name == "SDW" or self.name == "Transect ID":
+                if index not in self.selected_options:
+                    self.selected_options.append(index)
+                    # Change the background color of the selected option
+                    self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
             
             # Update the selected option    
             self.selected_option.set(self.options[selected_index[0]])
             print(f"Selected: {self.selected_option.get()}")
-            # Update the selected colors
-            self.update_selected_colors()
+            if self.name == "SDW" or self.name == "Transect ID":
+                # Update the selected colors
+                self.update_selected_colors()
             
     def update_selected_colors(self):
         # Change the background color of the selected options
