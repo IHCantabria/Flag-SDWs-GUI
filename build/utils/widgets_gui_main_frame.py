@@ -56,14 +56,18 @@ class DropdownApp():
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         
         # Change the parameters values according to the dropdown menu
-        if self.name == "Transect ID":
-            selectmode = tk.MULTIPLE
-            height = 7
-            width = 10
-        elif self.name == "SDW":
+        if self.name == "SDW":
             selectmode = tk.SINGLE
             height = 17
             width = 25
+        elif self.name == "Transect ID":
+            selectmode = tk.MULTIPLE
+            height = 7
+            width = 10
+        elif self.name == "Type Indicator":
+            selectmode = tk.SINGLE
+            height = 5
+            width = 42
 
         # Create a listbox with the options and associate it with the scrollbar
         self.dropdown_listbox = tk.Listbox(dropdown_frame, height=height, listvariable=tk.StringVar(value=self.options),
@@ -78,45 +82,42 @@ class DropdownApp():
         if self.name != "Transect ID": # Single selection
             # Get the selected option
             selected_index = self.dropdown_listbox.curselection()
-            
-            if selected_index:
-                # Get the index of the selected option
-                index = selected_index[0]
+            # Clear the previous selected option
+            self.selected_options = []
+            # Update the list of selected options
+            self.selected_options.append(selected_index[0])
+            # Update the selected option    
+            self.selected_option.set(self.options[selected_index[0]])
+            print(f"{self.name} Selected: {self.selected_option.get()}")
+            self.update_selected_colors()
                 
-                # The change of the background color is only applied when the name parameter is "SDW" or "Transect ID"
-                if self.name == "SDW":
-                    if index not in self.selected_options:
-                        self.selected_options.append(index)
-                        # Change the background color of the selected option
-                        self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
-                    # Update the selected colors
-                    self.update_selected_colors()
-                
-                # Update the selected option    
-                self.selected_option.set(self.options[selected_index[0]])
-                print(f"Selected: {self.selected_option.get()}")
         else: # Multiple selection
             # Get the selected options
             selected_indices = self.dropdown_listbox.curselection()
             
             # Clear the previous selected options
-            self.selected_options.clear()
+            self.selected_options = []
             
             # Update the list of selected options
             for index in selected_indices:
                 self.selected_options.append(index)
-            
+
             # Print the selected options
             selected_options = [self.options[index] for index in self.selected_options]
             self.selected_option.set(selected_options)
-            print(f"Selected: {self.selected_option.get()}")
+            print(f"{self.name} Selected: {self.selected_option.get()}")
             
-
+            # Change the background color of the selected options
+            self.update_selected_colors()
+            
     def update_selected_colors(self):
         # Change the background color of the selected options
-        for index in self.selected_options:
-            self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
-    
+        for index in range(len(self.options)):
+            if index in self.selected_options:
+                self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
+            else:
+                self.dropdown_listbox.itemconfig(index, {'bg': 'white'})
+        
     def select_all(self):
         # Select all the options
         self.dropdown_listbox.select_set(0, tk.END)
@@ -124,6 +125,8 @@ class DropdownApp():
         self.selected_options = list(range(len(self.options)))
         # Update the selected option
         self.selected_option.set(self.options)
+        # Change the background color of the selected options
+        self.update_selected_colors()
         print(f"Selected: {self.selected_option.get()}")
     
     def deselect_all(self):
@@ -133,6 +136,8 @@ class DropdownApp():
         self.selected_options.clear()
         # Update the selected option
         self.selected_option.set("")
+        # Change the background color of the selected options   
+        self.update_selected_colors()
         print(f"Selected: {self.selected_option.get()}")
 
 
