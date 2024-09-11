@@ -13,6 +13,8 @@ import pandas as pd
 from utils.commands_gui_initialize import *
 from utils.commands_gui_ask_start import *
 from utils.widgets_gui_main_frame import SDWDropdownApp, TransectsDropdownApp, TypeIndicatorDropdownApp, MapBrowserApp
+import stat
+import os
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -305,8 +307,11 @@ def command_save_sdw_button(sdw_dropdown):
     # Update the out_csv_df with the selected level of confidence
     out_csv_df.loc[(out_csv_df["date"] == date_sdw) & (out_csv_df["sensor"] == sensor_sdw),
                    "level_confidence"] = "High"
+    # Give all permissions to the output CSV file
+    out_csv_path_o = Path.joinpath(out_csv_path, "flag_sdw_output.csv")
+    out_csv_path_o.chmod(stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
     # Save the out_csv_df to the output CSV file
-    out_csv_df.to_csv(out_csv_path, index=False)
+    out_csv_df.to_csv(out_csv_path_o, index=False)
     print("SDW saved.")
     
     return
