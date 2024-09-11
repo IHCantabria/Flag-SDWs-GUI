@@ -107,7 +107,10 @@ def set_type_indicator_dropdown(canvas: Canvas):
         "5- Intertidal Water", "6- Backshore elements (e.g. vegetation shadow)",
         "7- N/A"
         ]
-    type_indicator_dropdown = DropdownApp("Type Indicator", canvas, 80, 590, type_indicator_options)
+    type_indicator_dropdown = DropdownApp("Type Indicator", canvas, 350, 650, type_indicator_options)
+    # Preselect the first option
+    type_indicator_dropdown.dropdown_listbox.select_set(0)
+    type_indicator_dropdown.selected_option.set(type_indicator_options[0])
     
     return type_indicator_dropdown
 
@@ -274,5 +277,8 @@ def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: DropdownApp
     # Create the Transect ID dropdown menu
     global transect_id_dropdown
     transect_id_dropdown = set_transect_id_dropdown(canvas, sdw_selection)
+    # Create the Type Indicator dropdown menu
+    global type_indicator_dropdown
+    type_indicator_dropdown = set_type_indicator_dropdown(canvas)
     
     return
