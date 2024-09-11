@@ -55,11 +55,19 @@ class DropdownApp():
         scrollbar = ttk.Scrollbar(dropdown_frame, orient=tk.VERTICAL)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         
-        # 
+        # Change the parameters values according to the dropdown menu
+        if self.name == "Transect ID":
+            selectmode = tk.MULTIPLE
+            height = 7
+            width = 10
+        elif self.name == "SDW":
+            selectmode = tk.SINGLE
+            height = 17
+            width = 25
 
         # Create a listbox with the options and associate it with the scrollbar
-        self.dropdown_listbox = tk.Listbox(dropdown_frame, height=17, listvariable=tk.StringVar(value=self.options),
-                                           selectmode=tk.SINGLE, yscrollcommand=scrollbar.set, width=25)
+        self.dropdown_listbox = tk.Listbox(dropdown_frame, height=height, listvariable=tk.StringVar(value=self.options),
+                                           selectmode=selectmode, yscrollcommand=scrollbar.set, width=width)
         self.dropdown_listbox.pack(side=tk.LEFT, fill=tk.BOTH)
         scrollbar.config(command=self.dropdown_listbox.yview)
 
@@ -67,25 +75,42 @@ class DropdownApp():
         self.dropdown_listbox.bind('<<ListboxSelect>>', self.on_select)
 
     def on_select(self, event):
-        # Get the selected option
-        selected_index = self.dropdown_listbox.curselection()
-        
-        if selected_index:
-            # Get the index of the selected option
-            index = selected_index[0]
+        if self.name != "Transect ID": # Single selection
+            # Get the selected option
+            selected_index = self.dropdown_listbox.curselection()
             
-            # The change of the background color is only applied when the name parameter is "SDW" or "Transect ID"
-            if self.name == "SDW":
-                if index not in self.selected_options:
-                    self.selected_options.append(index)
-                    # Change the background color of the selected option
-                    self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
-                # Update the selected colors
-                self.update_selected_colors()
+            if selected_index:
+                # Get the index of the selected option
+                index = selected_index[0]
+                
+                # The change of the background color is only applied when the name parameter is "SDW" or "Transect ID"
+                if self.name == "SDW":
+                    if index not in self.selected_options:
+                        self.selected_options.append(index)
+                        # Change the background color of the selected option
+                        self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
+                    # Update the selected colors
+                    self.update_selected_colors()
+                
+                # Update the selected option    
+                self.selected_option.set(self.options[selected_index[0]])
+                print(f"Selected: {self.selected_option.get()}")
+        else: # Multiple selection
+            # Get the selected options
+            selected_indices = self.dropdown_listbox.curselection()
             
-            # Update the selected option    
-            self.selected_option.set(self.options[selected_index[0]])
+            # Clear the previous selected options
+            self.selected_options.clear()
+            
+            # Update the list of selected options
+            for index in selected_indices:
+                self.selected_options.append(index)
+            
+            # Print the selected options
+            selected_options = [self.options[index] for index in self.selected_options]
+            self.selected_option.set(selected_options)
             print(f"Selected: {self.selected_option.get()}")
+            
 
     def update_selected_colors(self):
         # Change the background color of the selected options
