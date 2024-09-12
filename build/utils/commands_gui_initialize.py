@@ -132,7 +132,7 @@ def create_out_csv(output_folder_path: str, sdw_fc: gpd.GeoDataFrame, transects_
     # to know which transects are intersect each SDW
     intersected_fc = gpd.overlay(sdw_fc, transects_fc, how="intersection", keep_geom_type=False)
     # Create the two empty columns that will be filled in the main GUI frame
-    intersected_fc[["type_indicator", "level_confidence"]] = ""
+    intersected_fc[["type_indicator", "level_confidence"]] = "-"
     # Create a CSV file with the most important information
     global out_csv_path
     out_csv_path = os.path.join(output_folder_path, "flag_sdw_output.csv")
