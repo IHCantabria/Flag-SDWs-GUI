@@ -53,10 +53,6 @@ sdw_dropdown = set_sdw_dropdown(canvas)
 # Get the selected SDW
 sdw_dropdown_selected = sdw_dropdown.selected_option.get()
 
-# Get the transect IDs for the selected SDW
-"""if sdw_dropdown_selected is not None:
-    transect_id_dropdown = set_transect_id_dropdown(canvas, sdw_dropdown_selected)"""
-
 image_image_1 = PhotoImage(
     file=relative_to_assets("image_1.png"))
 image_1 = canvas.create_image(
@@ -157,6 +153,7 @@ image_7 = canvas.create_image(
     image=image_image_7
 )
 
+# PLOT BUTTON
 button_image_1 = PhotoImage(
     file=relative_to_assets("button_1.png"))
 button_1 = Button(
@@ -173,6 +170,7 @@ button_1.place(
     height=46.0
 )
 
+# SAVE SDW BUTTON
 button_image_2 = PhotoImage(
     file=relative_to_assets("button_2.png"))
 button_2 = Button(
@@ -360,7 +358,7 @@ image_13 = canvas.create_image(
     692.0,
     image=image_image_13
 )
-"""
+
 image_image_14 = PhotoImage(
     file=relative_to_assets("image_14.png"))
 image_14 = canvas.create_image(
@@ -376,7 +374,7 @@ image_15 = canvas.create_image(
     692.0,
     image=image_image_15
 )
-
+"""
 image_image_16 = PhotoImage(
     file=relative_to_assets("image_16.png"))
 image_16 = canvas.create_image(
