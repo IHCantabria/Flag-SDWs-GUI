@@ -12,7 +12,7 @@ import geopandas as gpd
 import pandas as pd
 from utils.commands_gui_initialize import *
 from utils.commands_gui_ask_start import *
-from utils.widgets_gui_main_frame import SDWDropdownApp, TransectsDropdownApp, TypeIndicatorDropdownApp, MapBrowserApp
+from utils.widgets_gui_main_frame import SDWDropdownApp, TransectsDropdownApp, TypeIndicatorDropdownApp, ConfidenceLevelDropdownApp, MapBrowserApp
 import stat
 import os
 import warnings
@@ -116,6 +116,25 @@ def set_type_indicator_dropdown(canvas: Canvas):
     
     return type_indicator_dropdown
 
+def set_confidence_level_dropdown(canvas: Canvas):
+    """
+    Set the dropdown menu for the confidence level selection.
+
+    Parameters:
+    - canvas (Canvas): Canvas object to place the dropdown menu.
+
+    Returns:
+    - None
+    """
+    # Set the confidence level dropdown menu
+    confidence_level_options = ["High", "Medium", "Low"]
+    confidence_level_dropdown = ConfidenceLevelDropdownApp(canvas, confidence_level_options)
+    # Preselect the first option
+    #confidence_level_dropdown.dropdown_listbox.select_set(0)
+    #confidence_level_dropdown.selected_option.set(confidence_level_options[0])
+    
+    return confidence_level_dropdown
+
 def plot_time_series(window: tk.Tk, sdw_selection: str, var: str):
     """
     Plot the Hs/Tide time series data.
@@ -217,7 +236,7 @@ def show_flood_ebb(canvas: Canvas, sdw_selection: str):
 
 def show_sdw_data(window: tk.Tk, sdw_selection: str):
     """
-    
+    Display the selected SDW data in a table.
     """
     # Get the selected SDW
     date_sdw = sdw_selection.split(" - ")[0]
@@ -282,7 +301,10 @@ def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: SDWDropdown
     # Create the Type Indicator dropdown menu
     global type_indicator_dropdown
     type_indicator_dropdown = set_type_indicator_dropdown(canvas)
-    
+    # Create the Confidence Level dropdown menu
+    global confidence_level_dropdown
+    confidence_level_dropdown = set_confidence_level_dropdown(canvas)
+        
     return
 
 def command_save_sdw_button(sdw_dropdown):
@@ -300,13 +322,14 @@ def command_save_sdw_button(sdw_dropdown):
     # Get the selected date and sensor
     date_sdw = sdw_selection.split(" - ")[0]
     sensor_sdw = sdw_selection.split(" - ")[1]
-    
+    # Get the selected transect IDs
+    transects_selection = transect_id_dropdown.selected_options
+    # Create a boolean mask for the date, sensor, and transect IDs
+    mask = (out_csv_df["date"] == date_sdw) &  (out_csv_df["sensor"] == sensor_sdw) & (out_csv_df["transect_id"].isin(transects_selection))
     # Update the out_csv_df with the selected type indicator
-    out_csv_df.loc[(out_csv_df["date"] == date_sdw) & (out_csv_df["sensor"] == sensor_sdw),
-                   "type_indicator"] = type_indicator_dropdown.selected_option.get()
+    out_csv_df.loc[mask, "type_indicator"] = type_indicator_dropdown.selected_option.get()
     # Update the out_csv_df with the selected level of confidence
-    out_csv_df.loc[(out_csv_df["date"] == date_sdw) & (out_csv_df["sensor"] == sensor_sdw),
-                   "level_confidence"] = "High"
+    out_csv_df.loc[mask, "level_confidence"] = confidence_level_dropdown.selected_option.get()
     # Give all permissions to the output CSV file
     out_csv_path_o = Path.joinpath(out_csv_path, "flag_sdw_output.csv")
     out_csv_path_o.chmod(stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
