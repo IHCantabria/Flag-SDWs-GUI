@@ -331,7 +331,7 @@ image_10 = canvas.create_image(
     1100.0,
     364.0,
     image=image_image_10
-)"""
+)
 
 image_image_11 = PhotoImage(
     file=relative_to_assets("image_11.png"))
@@ -349,7 +349,7 @@ image_12 = canvas.create_image(
     image=image_image_12
 )
 
-"""image_image_13 = PhotoImage(
+image_image_13 = PhotoImage(
     file=relative_to_assets("image_13.png"))
 image_13 = canvas.create_image(
     176.0,

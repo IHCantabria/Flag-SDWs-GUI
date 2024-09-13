@@ -387,9 +387,9 @@ class MapBrowserApp():
         # Get the raster file name
         raster_file_name = os.path.join(rgb_folder_path, f"{date_sdw}-{sensor_sdw}.tif")
         # Read the raster file
-        
         dst_crs = 'EPSG:4326'
         with rio.open(raster_file_name) as src:
+            # Read the bands
             r, g, b = src.read()
             # Stack the bands
             rgb = np.dstack((r, g, b))
@@ -401,65 +401,19 @@ class MapBrowserApp():
         # Conversion from UTM to WGS84 CRS
         bounds_orig = [[min_lat, min_lon], [max_lat, max_lon]]
         bounds_fin = []
-        
-        for item in bounds_orig:   
-            #converting to lat/lon
-            lat = item[0]
-            lon = item[1]
-            
-            proj = Transformer.from_crs(int(src_crs.split(":")[1]),
+        # Create the transformer object
+        proj = Transformer.from_crs(int(src_crs.split(":")[1]),
                                         int(dst_crs.split(":")[1]), always_xy=True)
-            lon_n, lat_n = proj.transform(lon, lat)
-
+        for item in bounds_orig:
+            #converting to lat/lon
+            lon_n, lat_n = proj.transform(item[1], item[0]) # lon, lat
             bounds_fin.append([lat_n, lon_n])
 
-        # Overlay raster (RGB) called img using add_child() function (opacity and bounding box set)
+        # Overlay raster (RGB) on the map
         self.map.add_child(folium.raster_layers.ImageOverlay(rgb,
                                                              name='RGB',
                                                              opacity=.7,
-                                                             bounds=bounds_fin))
-        # Center the map on the raster
-        #self.map.fit_bounds(bounds_fin)
-        #rgba_image = self.add_alpha(rgb_img)
-        
-        """
-        with rio.open(
-            os.path.join(rgb_folder_path, "test.tif"),
-            'w',
-            driver='GTiff',
-            height=height,
-            width=width,
-            count=count,
-            dtype=rgba_image.dtype,
-            transform=transform
-        ) as dst:
-            # Write the NumPy array to the rasterio dataset
-            dst.crs = rio.crs.CRS.from_epsg(4326)
-            dst.write(rgba_image)
-            # Add the raster to the map
-            folium.raster_layers.ImageOverlay(
-                image=rgba_image,
-                bounds=[[bounds.bottom, bounds.left], [bounds.top, bounds.right]],
-                opacity=0.5
-            ).add_to(self.map)"""
-        """
-        with rio.open(raster_file_name, "w") as src:
-            # Transform the projection to EPSG 4326
-            src.crs = rio.crs.CRS.from_epsg(4326)
-            # Read the 3 bands RGB
-            r, g, b = src.read()
-            # Stack the bands
-            rgb = np.dstack((r, g, b))
-            # Normalize the bands
-            #rgb = rgb / rgb.max()
-            # Get the bounds
-            bounds = src.bounds
-            # Add the raster to the map
-            folium.raster_layers.ImageOverlay(
-                image=rgb,
-                bounds=[[bounds.bottom, bounds.left], [bounds.top, bounds.right]],
-                opacity=0.5
-            ).add_to(self.map)"""
+                                                             bounds=bounds_fin))       
             
     def open_map(self):
         """
