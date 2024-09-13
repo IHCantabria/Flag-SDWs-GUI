@@ -15,7 +15,6 @@ import webbrowser
 
 class SDWDropdownApp():
     def __init__(self, canvas, options):
-        
         # Create a canvas
         self.canvas = canvas
 
@@ -77,10 +76,9 @@ class SDWDropdownApp():
                 self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
             else:
                 self.dropdown_listbox.itemconfig(index, {'bg': 'white'})
-
+                
 class TransectsDropdownApp():
     def __init__(self, canvas, options):
-
         # Create a canvas
         self.canvas = canvas
 
@@ -112,7 +110,7 @@ class TransectsDropdownApp():
         # Create a scrollbar
         scrollbar = ttk.Scrollbar(dropdown_frame, orient=tk.VERTICAL)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-
+        
         # Create a listbox with the options and associate it with the scrollbar
         self.dropdown_listbox = tk.Listbox(dropdown_frame, height=7, width=10, 
                                            listvariable=tk.StringVar(value=self.options),
@@ -123,53 +121,50 @@ class TransectsDropdownApp():
         # Bind the selection of the dropdown menu to the selected variable
         self.dropdown_listbox.bind('<<ListboxSelect>>', self.on_select)
 
-    def on_select(self, event):       
-        # Multiple selection
-        # Get the selected options
-        self.selected_indices = self.dropdown_listbox.curselection()
-        # Clear the previous selected options
+    def on_select(self, event):
+        # Get the selected option
+        selected_indices = self.dropdown_listbox.curselection()
+        # For some reason, this app is not working properly as it should.
+        # It is not selecting the options correctly when the user clicks on other dropdown menus of the app.
+        # To solve this issue, I declare the following conditional to identify when the selection is empty in order to not overwrite the previous selection.
+        if len(selected_indices) == 0:
+            return
+        # Clear the previous selected option
         self.selected_options.clear()
         # Update the list of selected options
-        self.selected_options = [self.options[index] for index in self.selected_indices]
+        for index in selected_indices:
+            self.selected_options.append(index)
         # Update the selected option
-        self.selected_option.set(self.selected_options)
+        self.selected_option.set([self.options[index] for index in self.selected_options])
         print(f"Transects Selected: {self.selected_option.get()}")
-        # Change the background color of the selected options
         self.update_selected_colors()
             
     def update_selected_colors(self):
         # Change the background color of the selected options
         for index in range(len(self.options)):
-            if index in self.selected_indices:
+            if index in self.selected_options:
                 self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
             else:
                 self.dropdown_listbox.itemconfig(index, {'bg': 'white'})
-        
+    
     def select_all(self):
         # Select all the options
-        self.dropdown_listbox.select_set(0, tk.END)
-        # Update the selected options
-        self.selected_options = self.options
+        self.selected_options = [i for i in range(len(self.options))]
         # Update the selected option
         self.selected_option.set(self.options)
-        # Change the background color of the selected options
-        self.update_selected_colors()
         print(f"Transects Selected: {self.selected_option.get()}")
+        self.update_selected_colors()
     
     def deselect_all(self):
         # Deselect all the options
-        self.dropdown_listbox.selection_clear(0, tk.END)
-        # Clear the selected options
         self.selected_options.clear()
         # Update the selected option
-        self.selected_option.set("")
-        # Change the background color of the selected options   
-        self.update_selected_colors()
+        self.selected_option.set([])
         print(f"Transects Selected: {self.selected_option.get()}")
-    
+        self.update_selected_colors()
+
 class TypeIndicatorDropdownApp():
     def __init__(self, canvas, options):
-        
         # Create a canvas
         self.canvas = canvas
 
@@ -234,7 +229,6 @@ class TypeIndicatorDropdownApp():
 
 class ConfidenceLevelDropdownApp():
     def __init__(self, canvas, options):
-        
         # Create a canvas
         self.canvas = canvas
 

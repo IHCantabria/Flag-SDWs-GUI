@@ -50,8 +50,6 @@ canvas.place(x = 0, y = 0)
 # Create a dropdown menu, single selection
 global sdw_dropdown
 sdw_dropdown = set_sdw_dropdown(canvas)
-# Get the selected SDW
-sdw_dropdown_selected = sdw_dropdown.selected_option.get()
 
 image_image_1 = PhotoImage(
     file=relative_to_assets("image_1.png"))
@@ -310,7 +308,7 @@ entry_1 = Text(
     bd=0,
     bg="#4B4B91",
     fg="#000716",
-    highlightthickness=0
+    highlightthickness=0,
 )
 entry_1.place(
     x=944.0,

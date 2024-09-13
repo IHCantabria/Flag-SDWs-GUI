@@ -41,57 +41,25 @@ def set_sdw_dropdown(canvas: Canvas):
     
     return sdw_dropdown
 
-def command_select_all_button():
+def set_transects_dropdown(canvas: Canvas, sdw_selection: str):
     """
-    Command to be executed when the "Select All" button is clicked.
-
-    Parameters:
-    - transect_id_dropdown (DropdownApp): DropdownApp object.
-
-    Returns:
-    - None
-    """
-    # Select all the transect IDs
-    transect_id_dropdown.select_all()
-
-    return
-
-def command_deselect_all_button():
-    """
-    Command to be executed when the "Deselect All" button is clicked.
-
-    Parameters:
-    - transect_id_dropdown (DropdownApp): DropdownApp object.
-
-    Returns:
-    - None
-    """
-    # Deselect all the transect IDs
-    transect_id_dropdown.deselect_all()
-
-    return
-
-def set_transect_id_dropdown(canvas: Canvas, sdw_selection: str):
-    """
-    Set the dropdown menu for the transect ID selection.
+    Set the dropdown menu for the transects selection.
 
     Parameters:
     - canvas (Canvas): Canvas object to place the dropdown menu.
-    - sdw_selection (str): Selected SDW.
 
     Returns:
     - None
     """
-    # Find the transects for the selected SDW in the flag_sdw_output.CSV file
+    # Get the selected date and sensor
     date_sdw = sdw_selection.split(" - ")[0]
     sensor_sdw = sdw_selection.split(" - ")[1]
-    transects_sdw = out_csv_df.loc[(out_csv_df["date"] == date_sdw) & (out_csv_df["sensor"] == sensor_sdw),
-                                   "transect_id"].values
-    # Set the transect ID dropdown menu
-    transect_id_options = transects_sdw.tolist()
-    transect_id_dropdown = TransectsDropdownApp(canvas, transect_id_options)
+    # Get the transects for the selected date and sensor
+    transects_options = out_csv_df.loc[(out_csv_df["date"] == date_sdw) & (out_csv_df["sensor"] == sensor_sdw),
+                                       "transect_id"].unique().tolist()
+    transects_dropdown = TransectsDropdownApp(canvas, transects_options)
     
-    return transect_id_dropdown
+    return transects_dropdown
 
 def set_type_indicator_dropdown(canvas: Canvas):
     """
@@ -272,6 +240,36 @@ def show_sdw_data(window: tk.Tk, sdw_selection: str):
     
     return    
 
+def command_select_all_button():
+    """
+    Command to be executed when the "Select All" button is clicked.
+
+    Parameters:
+    - None
+
+    Returns:
+    - None
+    """
+    # Select all the transects
+    transects_dropdown.select_all()
+    
+    return
+
+def command_deselect_all_button():
+    """
+    Command to be executed when the "Deselect All" button is clicked.
+
+    Parameters:
+    - None
+
+    Returns:
+    - None
+    """
+    # Select all the transects
+    transects_dropdown.deselect_all()
+    
+    return
+
 def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: SDWDropdownApp):
     """
     Command to be executed when the "Plot" button is clicked.
@@ -295,9 +293,9 @@ def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: SDWDropdown
     show_sdw_data(window, sdw_selection)
     # Create the map browser
     #map_browser = MapBrowserApp(sdw_selection)
-    # Create the Transect ID dropdown menu
-    global transect_id_dropdown
-    transect_id_dropdown = set_transect_id_dropdown(canvas, sdw_selection)
+    # Create the Transects dropdown menu
+    global transects_dropdown
+    transects_dropdown = set_transects_dropdown(canvas, sdw_selection)
     # Create the Type Indicator dropdown menu
     global type_indicator_dropdown
     type_indicator_dropdown = set_type_indicator_dropdown(canvas)
@@ -312,7 +310,7 @@ def command_save_sdw_button(sdw_dropdown):
     Command to be executed when the "Save SDW" button is clicked.
 
     Parameters:
-    - None
+    - sdw_dropdown (SDWDropdownApp): SDWDropdownApp object.
 
     Returns:
     - None
@@ -323,7 +321,8 @@ def command_save_sdw_button(sdw_dropdown):
     date_sdw = sdw_selection.split(" - ")[0]
     sensor_sdw = sdw_selection.split(" - ")[1]
     # Get the selected transect IDs
-    transects_selection = transect_id_dropdown.selected_options
+    transects_selection = eval(transects_dropdown.selected_option.get())
+    print(f"Selected transects: {transects_selection}") # Debug
     # Create a boolean mask for the date, sensor, and transect IDs
     mask = (out_csv_df["date"] == date_sdw) &  (out_csv_df["sensor"] == sensor_sdw) & (out_csv_df["transect_id"].isin(transects_selection))
     # Update the out_csv_df with the selected type indicator
