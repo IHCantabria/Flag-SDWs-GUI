@@ -293,15 +293,19 @@ class ConfidenceLevelDropdownApp():
 
 class MapBrowserApp():
     def __init__(self, sdw_selection: str):
+        # Read the SDW and transects fc
         self.sdw_selection = sdw_selection
         # Create the map object
-        self.map = folium.Map(location=[-34.61, -58.38], zoom_start=12)
+        self.map = folium.Map(zoom_start=12)
         # Add the SDW fc to the map
         self.add_sdw_fc()
         # Add the transects fc to the map
         self.add_transects_fc()
         # Plot the raster
         self.plot_raster()
+        folium.LayerControl().add_to(self.map)
+        # Set the extent of the map to the transects fc
+        self.set_extent()
         # Open the map on the browser
         self.open_map()
         
@@ -319,21 +323,36 @@ class MapBrowserApp():
         sensor_sdw = self.sdw_selection.split(" - ")[1]
         # Add the SDW fc to the map
         sdw_fc_row = sdw_fc[(sdw_fc["date"] == date_sdw) & (sdw_fc["sensor"] == sensor_sdw)]
-        GeoJson(sdw_fc_row, name=f"SDW {date_sdw}").add_to(self.map)
+        # Add the name of the SDW as a tooltip
+        sdw_fc_row["date-sensor"] = date_sdw.split(" ")[0] + " - " + sensor_sdw # YYYY-MM-DD - Sensor
+        tooltip = folium.GeoJsonTooltip(fields=["date-sensor"], aliases=["SDW Date-Sensor"])
+        GeoJson(sdw_fc_row, name=f"SDW {date_sdw}", tooltip=tooltip).add_to(self.map)
 
     def add_transects_fc(self):
         """
         Add the transects fc to the map.
         """
-        GeoJson(transects_fc, name="Transects").add_to(self.map)
-        # Show the transects id as labels on the map
-        for i in transects_fc.index:
-            folium.Marker(
-                location=[transects_fc.loc[i, "geometry"].centroid.y,
-                          transects_fc.loc[i, "geometry"].centroid.x],
-                popup=f"Transect ID {i}",
-                icon=folium.Icon(color="red", icon="info-sign")
-            ).add_to(self.map)
+        # Add the Transect ID as a label on the map
+        for row in transects_fc.iterrows():
+            transect_id = row[1]["transect_id"]
+            # Get the centroid of the transect
+            lat = row[1]["geometry"].centroid.y
+            lon = row[1]["geometry"].centroid.x
+            #folium.Marker([lat, lon], popup=f"Transect ID: {transect_id}").add_to(self.map)
+        # Add the ID of the transects as a tooltip
+        tooltip = folium.GeoJsonTooltip(fields=["transect_id"], aliases=["Transect ID"])
+        GeoJson(transects_fc, name="Transects", tooltip=tooltip).add_to(self.map)
+    
+    def set_extent(self):
+        """
+        Set the extent of the map to the transects fc.
+        """
+        # Get the transect fc bounds in geographic coordinates and set the map extent
+        transformer = Transformer.from_crs(transects_fc.crs, "EPSG:4326", always_xy=True)
+        bounds = transects_fc.total_bounds
+        # Convert the bounds to lat/lon
+        bounds = transformer.transform(bounds[0], bounds[1]) + transformer.transform(bounds[2], bounds[3])
+        self.map.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
        
     def plot_raster(self):
         """
@@ -377,8 +396,7 @@ class MapBrowserApp():
                                                              opacity=.7,
                                                              bounds=bounds_fin))
         # Center the map on the raster
-        self.map.fit_bounds(bounds_fin)
-        folium.LayerControl().add_to(self.map)
+        #self.map.fit_bounds(bounds_fin)
         #rgba_image = self.add_alpha(rgb_img)
         
         """

@@ -292,7 +292,7 @@ def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: SDWDropdown
     # Show the SDW data
     show_sdw_data(window, sdw_selection)
     # Create the map browser
-    #map_browser = MapBrowserApp(sdw_selection)
+    map_browser = MapBrowserApp(sdw_selection)
     # Create the Transects dropdown menu
     global transects_dropdown
     transects_dropdown = set_transects_dropdown(canvas, sdw_selection)
