@@ -12,6 +12,8 @@ import numpy as np
 from pathlib import Path
 import os
 import webbrowser
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 
 class SDWDropdownApp():
     def __init__(self, canvas, options):
@@ -310,26 +312,21 @@ class MapBrowserApp():
         # Open the map on the browser
         self.open_map()
         
-    def _check_map(self):
-        """
-        Check if there is a map already loaded on the browser and close it.
-        """
-        
     def add_sdw_fc(self):
         """
         Add the SDW fc to the map.
         """
         # Get the selected SDW
-        date_sdw = self.sdw_selection.split(" - ")[0]
-        sensor_sdw = self.sdw_selection.split(" - ")[1]
+        self.date_sdw = self.sdw_selection.split(" - ")[0]
+        self.sensor_sdw = self.sdw_selection.split(" - ")[1]
         # Add the SDW fc to the map
-        sdw_fc_row = sdw_fc[(sdw_fc["date"] == date_sdw) & (sdw_fc["sensor"] == sensor_sdw)]
+        sdw_fc_row = sdw_fc[(sdw_fc["date"] == self.date_sdw) & (sdw_fc["sensor"] == self.sensor_sdw)]
         # Add the name of the SDW as a tooltip
-        sdw_fc_row["date-sensor"] = date_sdw.split(" ")[0] + " - " + sensor_sdw # YYYY-MM-DD - Sensor
+        sdw_fc_row["date-sensor"] = self.date_sdw.split(" ")[0] + " - " + self.sensor_sdw # YYYY-MM-DD - Sensor
         tooltip = folium.GeoJsonTooltip(fields=["date-sensor"], aliases=["SDW Date-Sensor"])
         # Add the SDW to the map
         GeoJson(sdw_fc_row,
-                name=f"SDW {date_sdw}",
+                name=f"SDW {self.date_sdw}",
                 tooltip=tooltip,
                 style_function=lambda x: {"color": "#4B4B91"}
                 ).add_to(self.map)
@@ -466,9 +463,16 @@ class MapBrowserApp():
             
     def open_map(self):
         """
-        Open the map on the browser.
+        Save and open the map on the browser.
         """
+        # Add a title to the map
+        title_html = f"""
+        <h3 align="center" style="font-size:20px; color:#4B4B91"><b>{self.date_sdw} - {self.sensor_sdw}</b></h3>
+        """
+        self.map.get_root().html.add_child(folium.Element(title_html))
+        # Set the path to save the map
         out_path = Path(input_info_file).parent.parent
-        map_path = os.path.join(out_path, "map.html")
-        self.map.save(map_path)
-        webbrowser.open(map_path)
+        self.map_path = os.path.join(out_path, "map.html")
+        # Save the map and open it on the browser
+        self.map.save(self.map_path)
+        webbrowser.open(self.map_path)
