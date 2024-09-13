@@ -296,16 +296,17 @@ class MapBrowserApp():
         # Read the SDW and transects fc
         self.sdw_selection = sdw_selection
         # Create the map object
-        self.map = folium.Map(zoom_start=12)
-        # Add the SDW fc to the map
-        self.add_sdw_fc()
-        # Add the transects fc to the map
-        self.add_transects_fc()
-        # Plot the raster
-        self.plot_raster()
-        folium.LayerControl().add_to(self.map)
+        self.map = folium.Map()
         # Set the extent of the map to the transects fc
         self.set_extent()
+        # Add the transects fc to the map
+        self.add_transects_fc()
+        # Add the SDW fc to the map
+        self.add_sdw_fc()
+        # Plot the raster
+        self.plot_raster()
+        # Add the layer control to the map
+        folium.LayerControl().add_to(self.map)
         # Open the map on the browser
         self.open_map()
         
@@ -326,32 +327,56 @@ class MapBrowserApp():
         # Add the name of the SDW as a tooltip
         sdw_fc_row["date-sensor"] = date_sdw.split(" ")[0] + " - " + sensor_sdw # YYYY-MM-DD - Sensor
         tooltip = folium.GeoJsonTooltip(fields=["date-sensor"], aliases=["SDW Date-Sensor"])
-        GeoJson(sdw_fc_row, name=f"SDW {date_sdw}", tooltip=tooltip).add_to(self.map)
+        # Add the SDW to the map
+        GeoJson(sdw_fc_row,
+                name=f"SDW {date_sdw}",
+                tooltip=tooltip,
+                style_function=lambda x: {"color": "#4B4B91"}
+                ).add_to(self.map)
+
 
     def add_transects_fc(self):
         """
         Add the transects fc to the map.
         """
-        # Add the Transect ID as a label on the map
-        for row in transects_fc.iterrows():
-            transect_id = row[1]["transect_id"]
-            # Get the centroid of the transect
-            lat = row[1]["geometry"].centroid.y
-            lon = row[1]["geometry"].centroid.x
-            #folium.Marker([lat, lon], popup=f"Transect ID: {transect_id}").add_to(self.map)
         # Add the ID of the transects as a tooltip
         tooltip = folium.GeoJsonTooltip(fields=["transect_id"], aliases=["Transect ID"])
-        GeoJson(transects_fc, name="Transects", tooltip=tooltip).add_to(self.map)
+        # Add the transects to the map
+        GeoJson(transects_fc,
+                name="Transects",
+                tooltip=tooltip,
+                style_function=lambda x: {"color": "#DEBF33",
+                                          "opacity": 0.5}
+                ).add_to(self.map)
+        # Add the transects id as a label on the map
+        for _, row in transects_fc.iterrows():
+            # Get the centroid of the transect 
+            x, y = self.transformer.transform(row["geometry"].centroid.x,
+                                                  row["geometry"].centroid.y)
+            # Create a marker with the transect id
+            folium.Marker(
+                location=[y, x],  # Coordenadas del centroide
+                icon=folium.DivIcon(html=f'''
+                    <div style="
+                        font-size: 10pt;
+                        color: #DEBF33;
+                        font-weight: bold;
+                        text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000;
+                    ">{row["transect_id"]}</div>'''),
+                popup=f'<b>Transect ID:</b> {row["transect_id"]}',
+                tooltip=f'Transect ID: {row["transect_id"]}'
+            ).add_to(self.map)
     
     def set_extent(self):
         """
         Set the extent of the map to the transects fc.
         """
         # Get the transect fc bounds in geographic coordinates and set the map extent
-        transformer = Transformer.from_crs(transects_fc.crs, "EPSG:4326", always_xy=True)
+        self.transformer = Transformer.from_crs(transects_fc.crs, "EPSG:4326", always_xy=True)
         bounds = transects_fc.total_bounds
         # Convert the bounds to lat/lon
-        bounds = transformer.transform(bounds[0], bounds[1]) + transformer.transform(bounds[2], bounds[3])
+        bounds = self.transformer.transform(bounds[0], bounds[1]) + \
+            self.transformer.transform(bounds[2], bounds[3])
         self.map.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
        
     def plot_raster(self):
@@ -385,7 +410,8 @@ class MapBrowserApp():
             lat = item[0]
             lon = item[1]
             
-            proj = Transformer.from_crs(int(src_crs.split(":")[1]), int(dst_crs.split(":")[1]), always_xy=True)
+            proj = Transformer.from_crs(int(src_crs.split(":")[1]),
+                                        int(dst_crs.split(":")[1]), always_xy=True)
             lon_n, lat_n = proj.transform(lon, lat)
 
             bounds_fin.append([lat_n, lon_n])
