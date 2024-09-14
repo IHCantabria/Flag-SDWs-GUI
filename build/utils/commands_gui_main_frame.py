@@ -315,25 +315,31 @@ def command_save_sdw_button(sdw_dropdown):
     Returns:
     - None
     """
-    # Get the selected SDW
+    # 1 == Grab the data ==
     sdw_selection = sdw_dropdown.selected_option.get()
-    # Update the background color of the previous selected SDW
-    sdw_dropdown.update_previous_selected_options()
-    sdw_dropdown.update_selected_colors()
     # Get the selected date and sensor
     date_sdw = sdw_selection.split(" - ")[0]
     sensor_sdw = sdw_selection.split(" - ")[1]
     # Get the selected transect IDs
     transects_selection = eval(transects_dropdown.selected_option.get())
-    print(f"Selected transects: {transects_selection}") # Debug
+    # Get the type of indicator
+    type_indicator = type_indicator_dropdown.selected_option.get()
+    # Get the level of confidence
+    confidence_level = confidence_level_dropdown.selected_option.get()
     # Create a boolean mask for the date, sensor, and transect IDs
     mask = (out_csv_df["date"] == date_sdw) & \
         (out_csv_df["sensor"] == sensor_sdw) & \
             (out_csv_df["transect_id"].isin(transects_selection))
+            
+    # 2 == Update the background color of the previous selected SDW ==
+    sdw_dropdown.update_previous_selected_options()
+    sdw_dropdown.update_selected_colors()
+
+    # 3 == Update the out_csv_df with the selected type indicator and level of confidence ==
     # Update the out_csv_df with the selected type indicator
-    out_csv_df.loc[mask, "type_indicator"] = type_indicator_dropdown.selected_option.get()
+    out_csv_df.loc[mask, "type_indicator"] = type_indicator
     # Update the out_csv_df with the selected level of confidence
-    out_csv_df.loc[mask, "level_confidence"] = confidence_level_dropdown.selected_option.get()
+    out_csv_df.loc[mask, "level_confidence"] = confidence_level
     # Give all permissions to the output CSV file
     out_csv_path_o = Path.joinpath(out_csv_path, "flag_sdw_output.csv")
     out_csv_path_o.chmod(stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
