@@ -45,7 +45,7 @@ canvas = Canvas(
     relief = "ridge"
 )
 
-canvas.place(x = 0, y = 0)
+canvas.place(x=0, y=0)
 canvas.create_text(
     19.0,
     87.0,

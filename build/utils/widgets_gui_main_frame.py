@@ -341,7 +341,6 @@ class MapBrowserApp():
                 style_function=lambda x: {"color": "#4B4B91"}
                 ).add_to(self.map)
 
-
     def add_transects_fc(self):
         """
         Add the transects fc to the map.

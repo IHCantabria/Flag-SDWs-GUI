@@ -97,7 +97,7 @@ canvas.create_text(
     anchor="nw",
     text="Select a SDW",
     fill="#4B4B91",
-    font=("Verdana", 24 * -1)
+    font=("Verdana", 24 * -1, "bold")
 )
 
 canvas.create_text(
@@ -115,7 +115,7 @@ canvas.create_text(
     anchor="nw",
     text="Flag SDW Transects",
     fill="#4B4B91",
-    font=("Verdana", 24 * -1)
+    font=("Verdana", 24 * -1, "bold")
 )
 
 image_image_5 = PhotoImage(
@@ -228,7 +228,7 @@ canvas.create_text(
 
 canvas.create_text(
     410.0,
-    281.0,
+    270.0,
     anchor="nw",
     text="Hs",
     fill="#4B4B91",
@@ -245,7 +245,7 @@ image_8 = canvas.create_image(
 
 canvas.create_text(
     722.0,
-    281.0,
+    270.0,
     anchor="nw",
     text="Tide",
     fill="#4B4B91",
@@ -254,7 +254,7 @@ canvas.create_text(
 
 canvas.create_text(
     1047.0,
-    282.0,
+    270.0,
     anchor="nw",
     text="Tide state",
     fill="#4B4B91",
