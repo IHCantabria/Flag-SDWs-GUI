@@ -317,6 +317,9 @@ def command_save_sdw_button(sdw_dropdown):
     """
     # Get the selected SDW
     sdw_selection = sdw_dropdown.selected_option.get()
+    # Update the background color of the previous selected SDW
+    sdw_dropdown.update_previous_selected_options()
+    sdw_dropdown.update_selected_colors()
     # Get the selected date and sensor
     date_sdw = sdw_selection.split(" - ")[0]
     sensor_sdw = sdw_selection.split(" - ")[1]
@@ -324,7 +327,9 @@ def command_save_sdw_button(sdw_dropdown):
     transects_selection = eval(transects_dropdown.selected_option.get())
     print(f"Selected transects: {transects_selection}") # Debug
     # Create a boolean mask for the date, sensor, and transect IDs
-    mask = (out_csv_df["date"] == date_sdw) &  (out_csv_df["sensor"] == sensor_sdw) & (out_csv_df["transect_id"].isin(transects_selection))
+    mask = (out_csv_df["date"] == date_sdw) & \
+        (out_csv_df["sensor"] == sensor_sdw) & \
+            (out_csv_df["transect_id"].isin(transects_selection))
     # Update the out_csv_df with the selected type indicator
     out_csv_df.loc[mask, "type_indicator"] = type_indicator_dropdown.selected_option.get()
     # Update the out_csv_df with the selected level of confidence

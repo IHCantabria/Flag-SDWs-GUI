@@ -26,6 +26,9 @@ class SDWDropdownApp():
         
         # List of selected options
         self.selected_options = []
+        
+        # List of previous selected options
+        self.previous_selected_options = []
 
         # Variable to store the selected option
         self.selected_option = tk.StringVar()
@@ -76,8 +79,15 @@ class SDWDropdownApp():
         for index in range(len(self.options)):
             if index in self.selected_options:
                 self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
-            else:
+            else:                      
                 self.dropdown_listbox.itemconfig(index, {'bg': 'white'})
+            # Change the background color of the previous selected options
+            if self.options[index] in self.previous_selected_options and index not in self.selected_options:
+                self.dropdown_listbox.itemconfig(index, {'bg': 'gainsboro'})
+    
+    def update_previous_selected_options(self):
+        # Update the previous selected options
+        self.previous_selected_options.append(self.selected_option.get())
                 
 class TransectsDropdownApp():
     def __init__(self, canvas, options):
