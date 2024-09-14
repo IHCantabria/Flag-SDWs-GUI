@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from utils.matplotlib_config import *
+import matplotlib.patheffects as path_effects
 import geopandas as gpd
 import pandas as pd
 from utils.commands_gui_initialize import *
@@ -118,14 +119,14 @@ def plot_time_series(window: tk.Tk, sdw_selection: str, var: str):
     print(f"Plotting {var} data...")
     # Set the parameters for the selected variable to plot
     var_params = {
-        "hs": ["Hs (m)", (380, 310)],
-        "tide": ["Tide (m)", (710, 310)]
+        "hs": ["Hs (m)", (380, 290)],
+        "tide": ["Tide (m)", (710, 290)]
         }
     # Get the selected date SDW
     date_sdw = sdw_selection.split(" - ")[0]
     date_sdw = pd.to_datetime(date_sdw).floor("h")
     # Create the figure
-    fig = Figure(figsize=(3, 1.5), dpi=100)
+    fig = Figure(figsize=(3, 1.75), dpi=100)
     var_plot = fig.add_subplot(111)
     # Check that the selected date is in the metocean data. If not, display a empty plot
     if date_sdw not in metocean_df.index:
@@ -136,26 +137,38 @@ def plot_time_series(window: tk.Tk, sdw_selection: str, var: str):
         # Place the canvas in the window
         figure_canvas.get_tk_widget().place(x=var_params[var][1][0],
                                             y=var_params[var][1][1])
-        
+
         return
-    # Plot the tide data for the selected date
+    # Plot the data for the selected date
     var_plot.plot(metocean_df.loc[date_sdw].name,
                   metocean_df.loc[date_sdw, var],
-                  marker="o", lw=0, color="red", zorder=20)
+                  marker="o", lw=0, color="red", zorder=20,
+                  label=f"SDW date: {metocean_df.loc[date_sdw, var]:.2f}")
     # Plot a horizontal line at the selected SDW tide
     var_plot.axhline(y=metocean_df.loc[date_sdw, var],
                      color="red", ls="--", lw=0.5, zorder=15)
-    # Plot a horizontal line at the median tide level
-    var_plot.axhline(y=metocean_df[var].median(), color="black", lw=0.5, zorder=10)
+    # Plot a horizontal line at the median level
+    var_median = metocean_df[var].median()
+    var_plot.axhline(y=var_median, color="black", lw=1, zorder=10)
+    # Draw the median level text
+    median_text = var_plot.text(metocean_df.index[0], var_median,
+                                f"P50% = {var_median:.2f}",
+                                ha="left", va="center", color="black", fontsize=7.5,
+                                zorder=10)
+    median_text.set_path_effects([path_effects.Stroke(linewidth=2, foreground='white'),
+                                  path_effects.Normal()])
     # Plot the entire tide data
     var_plot.plot(metocean_df[var])
     var_plot.set_ylabel(var_params[var][0])
     # Rotate x-axis ticks labels
     var_plot.set_xticklabels(var_plot.get_xticklabels(), rotation=45)
+    # Set the legend
+    var_plot.legend(fontsize=7.5, labelcolor='linecolor')
     # Tight layout
     fig.tight_layout()
-    # Set the background transparent
+    # Set the background of the figure and axis "transparent"
     fig.patch.set_facecolor('#F7F0CE')
+    var_plot.set_facecolor('#F7F0CE')
     # Create the Tkinter canvas
     figure_canvas = FigureCanvasTkAgg(fig, master=window)
     figure_canvas.draw()
