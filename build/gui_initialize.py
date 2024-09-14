@@ -32,6 +32,7 @@ window = Tk()
 window.title("Flag SDWs GUI")
 window.geometry("688x410")
 window.configure(bg = "#FFFFFF")
+window.iconbitmap(ASSETS_PATH.parent / "favicon.ico")
 # Set the action when trying to close the window
 window.protocol("WM_DELETE_WINDOW", on_closing)
 
@@ -152,7 +153,7 @@ canvas.create_text(
     anchor="nw",
     text="Flag SDWs",
     fill="#4B4B91",
-    font=("Verdana", 38 * -1)
+    font=("Verdana", 34 * -1, "bold")
 )
 
 canvas.create_text(
@@ -161,7 +162,7 @@ canvas.create_text(
     anchor="nw",
     text="GUI",
     fill="#4B4B91",
-    font=("Verdana", 38 * -1)
+    font=("Verdana", 34 * -1, "bold")
 )
 
 # START BUTTON
@@ -259,7 +260,7 @@ image_3 = canvas.create_image(
 canvas.create_rectangle(
     250.0,
     356.0,
-    668.0011901855469,
+    680.0,
     359.0,
     fill="#DEBF33",
     outline="")

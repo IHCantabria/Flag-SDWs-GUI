@@ -33,6 +33,7 @@ window = Tk()
 window.title("Flag SDWs GUI")
 window.geometry("1242x782")
 window.configure(bg = "#FFFFFF")
+window.iconbitmap(ASSETS_PATH.parent / "favicon.ico")
 # Set the action when trying to close the window
 window.protocol("WM_DELETE_WINDOW", on_closing)
 
