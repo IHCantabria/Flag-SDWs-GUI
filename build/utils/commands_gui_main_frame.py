@@ -75,7 +75,7 @@ def set_type_indicator_dropdown(canvas: Canvas):
     # Set the type indicator dropdown menu
     type_indicator_options = [
         "1- Waterline", "2- Wave run-up", "3- Max. High Tide Level",
-        "4- Intertidal Water", "5- Intertidal Shapes", "6- Backshore elements",
+        "4- Intertidal Water", "5- Intertidal Morph. Features", "6- Backshore elements",
         "7- N/A"
         ]
     type_indicator_dropdown = TypeIndicatorDropdownApp(canvas, type_indicator_options)
