@@ -36,7 +36,7 @@ The application is divided into 3 window frames, which are described below:
 
 <div align="center">
   <a href="https://github.com/AlbertGallegoJimenez/Flag-SDWs-GUI">
-    <img src="images/frame_initialize.png" width="50%">
+    <img src="images/frame_initialize.png" width="60%">
   </a>
 </div>
 
