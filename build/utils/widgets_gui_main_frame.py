@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
+from random import randint
+import folium.raster_layers
 from utils.commands_gui_initialize import *
 from utils.commands_gui_ask_start import *
 from pyproj import Transformer
@@ -394,13 +396,8 @@ class MapBrowserApp():
         """
         Try another way to plot the raster on the map.
         """
-        # Get the date and sensor from the selected SDW
-        date_sdw = self.sdw_selection.split(" - ")[0]
-        date_sdw = pd.to_datetime(date_sdw).strftime("%Y-%m-%d")
-        sensor_sdw = self.sdw_selection.split(" - ")[1]
         # Get the raster file name
-        raster_file_name = os.path.join(rgb_folder_path, f"{date_sdw}-{sensor_sdw}.tif")
-        
+        raster_file_name = os.path.join(rgb_folder_path, f"{self.date_sdw.split(' ')[0]}-{self.sensor_sdw}.tif")
         # Open the raster file
         with rio.open(raster_file_name) as src:
             # Read the bands
@@ -419,7 +416,7 @@ class MapBrowserApp():
             def normalize(band):
                 band_min, band_max = np.percentile(band, (2, 98))  # Clip the values between the 2nd and 98th percentile
                 return np.clip((band - band_min) * 255 / (band_max - band_min), 0, 255)
-
+            
             red = normalize(red)
             green = normalize(green)
             blue = normalize(blue)
@@ -433,14 +430,27 @@ class MapBrowserApp():
 
             # Save the normalized RGB raster
             out_temp_raster = os.path.join(Path(input_info_file).parent.parent, 'temp_normalized_rgb.tif')
+            # Remove the file if it already exists
+            if os.path.exists(out_temp_raster):
+                os.remove(out_temp_raster)
             with rio.open(out_temp_raster, 'w', **profile) as dst:
                 dst.write(rgb)
-                
-        # First, create a tile server from local raster file
-        tile_client = TileClient(out_temp_raster)
-        # Create folium tile layer from that server
-        t = get_folium_tile_layer(tile_client)
-        self.map.add_child(t)
+            
+            # Overlay the raster on the map
+            """            
+            print("file://" + out_temp_raster)
+            folium.raster_layers.ImageOverlay(image="file://" + out_temp_raster,
+                                              bounds=[[bounds.bottom, bounds.left], [bounds.top, bounds.right]],
+                                              colormap=lambda x: (0, 0, 0, x),
+                                              origin='lower').add_to(self.map)
+            """       
+            # Create a tile server from local raster file
+            tile_client = TileClient(out_temp_raster)
+            # Clear cache
+            #tile_client.clear_cache()
+            # Create folium tile layer from that server
+            tile_layer = get_folium_tile_layer(tile_client, name=f"Layer_{randint(0, 10000)}") # Random name to avoid conflicts
+            self.map.add_child(tile_layer)
             
     def open_map(self):
         """
