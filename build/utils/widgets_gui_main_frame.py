@@ -428,22 +428,11 @@ class MapBrowserApp():
             profile = src.profile
             profile.update(dtype=rio.uint8, count=3, nodata=0)
 
-            # Save the normalized RGB raster
+            # Save the normalized RGB raster as a temporary file
             out_temp_raster = os.path.join(Path(input_info_file).parent.parent, 'temp_normalized_rgb.tif')
-            # Remove the file if it already exists
-            if os.path.exists(out_temp_raster):
-                os.remove(out_temp_raster)
             with rio.open(out_temp_raster, 'w', **profile) as dst:
                 dst.write(rgb)
             
-            # Overlay the raster on the map
-            """            
-            print("file://" + out_temp_raster)
-            folium.raster_layers.ImageOverlay(image="file://" + out_temp_raster,
-                                              bounds=[[bounds.bottom, bounds.left], [bounds.top, bounds.right]],
-                                              colormap=lambda x: (0, 0, 0, x),
-                                              origin='lower').add_to(self.map)
-            """       
             # Create a tile server from local raster file
             tile_client = TileClient(out_temp_raster)
             # Clear cache
@@ -451,6 +440,7 @@ class MapBrowserApp():
             # Create folium tile layer from that server
             tile_layer = get_folium_tile_layer(tile_client, name=f"Layer_{randint(0, 10000)}") # Random name to avoid conflicts
             self.map.add_child(tile_layer)
+            del tile_client, tile_layer
             
     def open_map(self):
         """
