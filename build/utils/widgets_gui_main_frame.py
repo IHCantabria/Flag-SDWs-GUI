@@ -12,8 +12,9 @@ import numpy as np
 from pathlib import Path
 import os
 import webbrowser
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
+import localtileserver
+from localtileserver import get_folium_tile_layer
+from localtileserver import TileClient
 
 class SDWDropdownApp():
     def __init__(self, canvas, options):
@@ -388,10 +389,10 @@ class MapBrowserApp():
         bounds = self.transformer.transform(bounds[0], bounds[1]) + \
             self.transformer.transform(bounds[2], bounds[3])
         self.map.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
-       
+               
     def plot_raster(self):
         """
-        Read the raster file and return the data.
+        Try another way to plot the raster on the map.
         """
         # Get the date and sensor from the selected SDW
         date_sdw = self.sdw_selection.split(" - ")[0]
@@ -399,34 +400,47 @@ class MapBrowserApp():
         sensor_sdw = self.sdw_selection.split(" - ")[1]
         # Get the raster file name
         raster_file_name = os.path.join(rgb_folder_path, f"{date_sdw}-{sensor_sdw}.tif")
-        # Read the raster file
-        dst_crs = 'EPSG:4326'
+        
+        # Open the raster file
         with rio.open(raster_file_name) as src:
             # Read the bands
-            r, g, b = src.read()
-            # Stack the bands
-            rgb = np.dstack((r, g, b))
-            # Normalize the bands to 0-1
-            rgb = rgb / rgb.max()
-            src_crs = src.crs['init'].upper()
-            min_lon, min_lat, max_lon, max_lat = src.bounds
-            
-        # Conversion from UTM to WGS84 CRS
-        bounds_orig = [[min_lat, min_lon], [max_lat, max_lon]]
-        bounds_fin = []
-        # Create the transformer object
-        proj = Transformer.from_crs(int(src_crs.split(":")[1]),
-                                        int(dst_crs.split(":")[1]), always_xy=True)
-        for item in bounds_orig:
-            #converting to lat/lon
-            lon_n, lat_n = proj.transform(item[1], item[0]) # lon, lat
-            bounds_fin.append([lat_n, lon_n])
+            red = src.read(1)
+            green = src.read(2)
+            blue = src.read(3)
 
-        # Overlay raster (RGB) on the map
-        self.map.add_child(folium.raster_layers.ImageOverlay(rgb,
-                                                             name='RGB',
-                                                             opacity=.7,
-                                                             bounds=bounds_fin))       
+            # Replace the nodata values with 0
+            nodata_value = src.nodatavals[0]  # Assuming all bands have the same nodata value
+            if nodata_value == 65535:
+                red[red == nodata_value] = 0
+                green[green == nodata_value] = 0
+                blue[blue == nodata_value] = 0
+
+            # Normalize the values to the range [0, 255] with clipping to avoid outliers
+            def normalize(band):
+                band_min, band_max = np.percentile(band, (2, 98))  # Clip the values between the 2nd and 98th percentile
+                return np.clip((band - band_min) * 255 / (band_max - band_min), 0, 255)
+
+            red = normalize(red)
+            green = normalize(green)
+            blue = normalize(blue)
+
+            # Convert the bands to uint8
+            rgb = np.stack((red, green, blue), axis=0).astype(np.uint8)
+
+            # Copy the metadata of the source raster file
+            profile = src.profile
+            profile.update(dtype=rio.uint8, count=3, nodata=0)
+
+            # Save the normalized RGB raster
+            out_temp_raster = os.path.join(Path(input_info_file).parent.parent, 'temp_normalized_rgb.tif')
+            with rio.open(out_temp_raster, 'w', **profile) as dst:
+                dst.write(rgb)
+                
+        # First, create a tile server from local raster file
+        tile_client = TileClient(out_temp_raster)
+        # Create folium tile layer from that server
+        t = get_folium_tile_layer(tile_client)
+        self.map.add_child(t)
             
     def open_map(self):
         """
