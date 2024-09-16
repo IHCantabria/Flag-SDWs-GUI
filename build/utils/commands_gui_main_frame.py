@@ -359,7 +359,8 @@ def command_save_sdw_button(sdw_dropdown, entry_1):
     # Update the out_csv_df with the selected level of confidence
     out_csv_df.loc[mask, "level_confidence"] = confidence_level
     # Give all permissions to the output CSV file
-    out_csv_path_o = Path.joinpath(out_csv_path, "flag_sdw_output.csv")
+    print("Ruta output csv", out_csv_path)
+    out_csv_path_o = Path.joinpath(out_csv_path) / "flag_sdw_output.csv"
     out_csv_path_o.chmod(stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
     # Save the out_csv_df to the output CSV file
     out_csv_df.to_csv(out_csv_path_o, index=False)

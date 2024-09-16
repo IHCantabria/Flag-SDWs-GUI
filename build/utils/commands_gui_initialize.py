@@ -82,7 +82,7 @@ def create_output_folder():
     input_files_folder = os.path.join(output_folder_path, "input_files")
     os.makedirs(input_files_folder, exist_ok=True)
     global input_info_file
-    input_info_file = input_files_folder
+    input_info_file = Path(input_files_folder) / "input_info.txt"
     return output_folder_path, input_files_folder
 
 def load_csv(file_path):
