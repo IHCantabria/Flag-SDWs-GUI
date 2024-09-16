@@ -41,7 +41,7 @@ class SDWDropdownApp():
         self.create_dropdown()
         
         # Locate the Frame object in the canvas at the specified position
-        self.canvas.create_window(80, 110, window=self.frame, anchor="nw")
+        self.canvas.create_window(75, 110, window=self.frame, anchor="nw")
 
     def create_dropdown(self):
         # Frame that contains the dropdown menu and scrollbar
@@ -53,9 +53,10 @@ class SDWDropdownApp():
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         
         # Create a listbox with the options and associate it with the scrollbar
-        self.dropdown_listbox = tk.Listbox(dropdown_frame, height=17, width=25, 
+        self.dropdown_listbox = tk.Listbox(dropdown_frame, height=17, width=22, 
                                            listvariable=tk.StringVar(value=self.options),
                                            selectmode=tk.SINGLE, yscrollcommand=scrollbar.set)
+        self.dropdown_listbox.config(font=("Verdana", 9), fg="#4B4B91")
         self.dropdown_listbox.pack(side=tk.LEFT, fill=tk.BOTH)
         scrollbar.config(command=self.dropdown_listbox.yview)
 
@@ -112,7 +113,7 @@ class TransectsDropdownApp():
         self.create_dropdown()
         
         # Locate the Frame object in the canvas at the specified position
-        self.canvas.create_window(85, 632, window=self.frame, anchor="nw")
+        self.canvas.create_window(80, 632, window=self.frame, anchor="nw")
 
     def create_dropdown(self):
         # Frame that contains the dropdown menu and scrollbar
@@ -124,9 +125,10 @@ class TransectsDropdownApp():
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         
         # Create a listbox with the options and associate it with the scrollbar
-        self.dropdown_listbox = tk.Listbox(dropdown_frame, height=7, width=10, 
+        self.dropdown_listbox = tk.Listbox(dropdown_frame, height=7, width=8, 
                                            listvariable=tk.StringVar(value=self.options),
                                            selectmode=tk.MULTIPLE, yscrollcommand=scrollbar.set)
+        self.dropdown_listbox.config(font=("Verdana", 9), fg="#4B4B91")
         self.dropdown_listbox.pack(side=tk.LEFT, fill=tk.BOTH)
         scrollbar.config(command=self.dropdown_listbox.yview)
 
@@ -210,9 +212,10 @@ class TypeIndicatorDropdownApp():
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         
         # Create a listbox with the options and associate it with the scrollbar
-        self.dropdown_listbox = tk.Listbox(dropdown_frame, height=5, width=42, 
+        self.dropdown_listbox = tk.Listbox(dropdown_frame, height=5, width=30, 
                                            listvariable=tk.StringVar(value=self.options),
                                            selectmode=tk.SINGLE, yscrollcommand=scrollbar.set)
+        self.dropdown_listbox.config(font=("Verdana", 9), fg="#4B4B91")
         self.dropdown_listbox.pack(side=tk.LEFT, fill=tk.BOTH)
         scrollbar.config(command=self.dropdown_listbox.yview)
 
@@ -277,6 +280,7 @@ class ConfidenceLevelDropdownApp():
         self.dropdown_listbox = tk.Listbox(dropdown_frame, height=3, width=10, 
                                            listvariable=tk.StringVar(value=self.options),
                                            selectmode=tk.SINGLE, yscrollcommand=scrollbar.set)
+        self.dropdown_listbox.config(font=("Verdana", 9), fg="#4B4B91")
         self.dropdown_listbox.pack(side=tk.LEFT, fill=tk.BOTH)
         scrollbar.config(command=self.dropdown_listbox.yview)
 
