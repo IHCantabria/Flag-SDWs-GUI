@@ -44,13 +44,13 @@ The application is divided into 3 window frames, which are described below:
 
 <div align="center">
   <a href="https://github.com/AlbertGallegoJimenez/Flag-SDWs-GUI">
-    <img src="images/frame_main_2.png" width="80%">
+    <img src="images/frame_main_2.png" width="100%">
   </a>
 </div>
 
 <div align="center">
   <a href="https://github.com/AlbertGallegoJimenez/Flag-SDWs-GUI">
-    <img src="images/map_app.png" width="70%">
+    <img src="images/map_app.png" width="100%">
   </a>
 </div>
 
