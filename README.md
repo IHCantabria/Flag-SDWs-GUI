@@ -30,7 +30,6 @@ The application is divided into 3 window frames, which are described below:
 
 2. Initialize a project by passing input data. When "Start" button is clicked, the output folder is created with a text file where the previous input is saved. In addition, the output CSV file where the results are collected is saved as **flag_sdw_output.csv**.
 > [!WARNING]
-> ⚠️
 > - RGB TIF file names must be stored in the ``YYYY-MM-DD-sensor`` format, e.g.: "2021-10-28-S2`.tif".
 > - Make sure that the Feature Class names you pass are actually in the File GDB.
 > - The metocean time series file must have, at least, a column named ``date`` in ISO format; ``hs`` expressing the significant wave height in meters; and ``tide`` expressing the astronomical tide in meters.
