@@ -14,7 +14,7 @@ This repository contains the GUI software developed to identify instances where 
   ``` bash
   pip install -r requirements.txt
   ```
-**2. Run the main script (build/main.py)**
+**2. Run the [main.py](https://github.com/IHCantabria/Flag-SDWs-GUI/tree/main/build/main.py) script located in the [build](https://github.com/IHCantabria/Flag-SDWs-GUI/tree/main/build) subfolder**
 ``` bash
 python main.py
 ```
@@ -26,7 +26,7 @@ For code-development issues contact 👨‍💻[Albert Gallego](gallegoa@unican.
 </br>
 </br>
 <div align="center">
-  <a href="https://github.com/AlbertGallegoJimenez/SDS-uncertainty-analysis">
+  <a href="https://github.com/AlbertGallegoJimenez/Flag-SDWs-GUI">
     <img src="images/Color_LogoAutoCos.png" alt="AutoCos logo" width="20%">
     </br>
     </br>
