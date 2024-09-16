@@ -318,18 +318,23 @@ def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: SDWDropdown
         
     return
 
-def command_save_sdw_button(sdw_dropdown):
+def command_save_sdw_button(sdw_dropdown, entry_1):
     """
     Command to be executed when the "Save SDW" button is clicked.
 
     Parameters:
     - sdw_dropdown (SDWDropdownApp): SDWDropdownApp object.
+    - entry_1 (Entry): Entry object.
 
     Returns:
     - None
     """
     # 1 == Grab the data ==
+    # Create a list to store all the saved SDWs if not exists
+    if "saved_sdws" not in locals():
+        saved_sdws = []
     sdw_selection = sdw_dropdown.selected_option.get()
+    saved_sdws.append(sdw_selection)
     # Get the selected date and sensor
     date_sdw = sdw_selection.split(" - ")[0]
     sensor_sdw = sdw_selection.split(" - ")[1]
@@ -358,6 +363,15 @@ def command_save_sdw_button(sdw_dropdown):
     out_csv_path_o.chmod(stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
     # Save the out_csv_df to the output CSV file
     out_csv_df.to_csv(out_csv_path_o, index=False)
+    
+    # 4 == Update the entry_1 widget with the selected SDW ==
+    # Calculate the number of SDW left to save
+    unique_date_sensor = (out_csv_df["date"] + " - " + out_csv_df["sensor"]).unique()
+    sdw_left = len(unique_date_sensor) - len(saved_sdws)
+    # Update the entry_1 widget with the number of SDW left to save
+    entry_1.delete(0, tk.END)
+    entry_1.insert(0, f"{len(saved_sdws)}/{len(unique_date_sensor)} SDW done")
+    
     print("SDW saved.")
     
     return

@@ -176,7 +176,7 @@ button_2 = Button(
     image=button_image_2,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: command_save_sdw_button(sdw_dropdown),
+    command=lambda: command_save_sdw_button(sdw_dropdown, entry_1),
     relief="flat"
 )
 button_2.place(
@@ -298,24 +298,21 @@ canvas.create_text(
     font=("Verdana", 24 * -1)
 )
 
-entry_image_1 = PhotoImage(
-    file=relative_to_assets("entry_1.png"))
-entry_bg_1 = canvas.create_image(
-    990.5,
-    723.0,
-    image=entry_image_1
-)
-entry_1 = Text(
+"""entry_1 = Text(
     bd=0,
-    bg="#4B4B91",
-    fg="#000716",
+    fg="#4B4B91",
     highlightthickness=0,
-)
+    font=("Verdana", 20 * -1)
+)"""
+entry_1 = tk.Entry(window,
+                   font=("Verdana", 20 * -1),
+                   bd=0,
+                   fg="#4B4B91",)
 entry_1.place(
     x=944.0,
-    y=711.0,
+    y=715.0,
     width=93.0,
-    height=22.0
+    height=25.0
 )
 
 """image_image_9 = PhotoImage(
