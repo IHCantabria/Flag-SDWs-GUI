@@ -395,8 +395,8 @@ def command_save_sdw_button(sdw_dropdown, entry_1):
     unique_date_sensor = (out_csv_df["date"] + " - " + out_csv_df["sensor"]).unique()
     sdw_left = len(unique_date_sensor) - len(saved_sdws)
     # Update the entry_1 widget with the number of SDW left to save
-    entry_1.delete(0, tk.END)
-    entry_1.insert(0, f"{len(saved_sdws)}/{len(unique_date_sensor)} SDW done")
+    #entry_1.delete(0, tk.END)
+    #entry_1.insert(0, f"{len(saved_sdws)}/{len(unique_date_sensor)} SDW done")
     
     print("SDW saved.")
     

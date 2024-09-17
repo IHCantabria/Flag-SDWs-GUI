@@ -79,12 +79,12 @@ class SDWDropdownApp():
         # Change the background color of the selected options
         for index in range(len(self.options)):
             if index in self.selected_options:
-                self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
+                self.dropdown_listbox.itemconfig(index, {'bg': 'gainsboro'})
             else:                      
                 self.dropdown_listbox.itemconfig(index, {'bg': 'white'})
             # Change the background color of the previous selected options
             if self.options[index] in self.previous_selected_options and index not in self.selected_options:
-                self.dropdown_listbox.itemconfig(index, {'bg': 'gainsboro'})
+                self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
     
     def update_previous_selected_options(self):
         # Update the previous selected options
@@ -168,12 +168,12 @@ class TransectsDropdownApp():
         # Change the background color of the selected options
         for index in range(len(self.options)):
             if index in self.selected_options:
-                self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
+                self.dropdown_listbox.itemconfig(index, {'bg': 'gainsboro'})
             else:                      
                 self.dropdown_listbox.itemconfig(index, {'bg': 'white'})
             # Change the background color of the previous saved options
-            if self.options[index] in self.saved_transects and index not in self.selected_options:
-                self.dropdown_listbox.itemconfig(index, {'bg': 'gainsboro'})
+            if self.options[index] in self.saved_transects:
+                self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
     
     def select_all(self):
         # Select all the options
@@ -252,7 +252,7 @@ class TypeIndicatorDropdownApp():
         # Change the background color of the selected options
         for index in range(len(self.options)):
             if index in self.selected_options:
-                self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
+                self.dropdown_listbox.itemconfig(index, {'bg': 'gainsboro'})
             else:
                 self.dropdown_listbox.itemconfig(index, {'bg': 'white'})
 
@@ -317,7 +317,7 @@ class ConfidenceLevelDropdownApp():
         # Change the background color of the selected options
         for index in range(len(self.options)):
             if index in self.selected_options:
-                self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
+                self.dropdown_listbox.itemconfig(index, {'bg': 'gainsboro'})
             else:
                 self.dropdown_listbox.itemconfig(index, {'bg': 'white'})
 
