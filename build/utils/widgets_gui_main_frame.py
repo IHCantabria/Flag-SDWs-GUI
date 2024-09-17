@@ -101,6 +101,9 @@ class TransectsDropdownApp():
         
         # List of selected options
         self.selected_options = []
+        
+        # List of saved transects
+        self.saved_transects = []
 
         # Variable to store the selected option
         self.selected_option = tk.StringVar()
@@ -151,15 +154,26 @@ class TransectsDropdownApp():
         # Update the selected option
         self.selected_option.set([self.options[index] for index in self.selected_options])
         print(f"Transects Selected: {self.selected_option.get()}")
-        self.update_selected_colors()
-            
+        self.update_selected_colors()   
+    """        
     def update_selected_colors(self):
         # Change the background color of the selected options
         for index in range(len(self.options)):
             if index in self.selected_options:
                 self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
             else:
+                self.dropdown_listbox.itemconfig(index, {'bg': 'white'})"""
+                
+    def update_selected_colors(self):
+        # Change the background color of the selected options
+        for index in range(len(self.options)):
+            if index in self.selected_options:
+                self.dropdown_listbox.itemconfig(index, {'bg': 'lightgreen'})
+            else:                      
                 self.dropdown_listbox.itemconfig(index, {'bg': 'white'})
+            # Change the background color of the previous saved options
+            if self.options[index] in self.saved_transects and index not in self.selected_options:
+                self.dropdown_listbox.itemconfig(index, {'bg': 'gainsboro'})
     
     def select_all(self):
         # Select all the options
