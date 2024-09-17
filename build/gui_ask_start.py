@@ -51,9 +51,9 @@ canvas.create_text(
     19.0,
     87.0,
     anchor="nw",
-    text="You want to start a new project?",
+    text="Do you want to start a new project?",
     fill="#4B4B91",
-    font=("Verdana", 16 * -1)
+    font=("Verdana", 15 * -1)
 )
 
 canvas.create_rectangle(
