@@ -44,8 +44,8 @@ def no_button_clicked(window: Tk):
     read_input_info_file(input_info_file)
     # Read the output CSV file created in the initialization GUI
     global out_csv_path
-    out_csv_path = Path(input_info_file).parent.parent
-    read_out_csv_file(out_csv_path / "flag_sdw_output.csv")
+    out_csv_path = Path(input_info_file).parent.parent / "flag_sdw_output.csv"
+    read_out_csv_file(out_csv_path)
     window.destroy()
     return
 
