@@ -26,6 +26,21 @@ ASSETS_PATH = Path.joinpath(OUTPUT_PATH, "assets/frame2")
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
+def get_previous_sdws() -> list:
+    """
+    Get the previous saved SDWs from the output CSV file.
+    """
+    # Read the output CSV file
+    out_csv_df = pd.read_csv(out_csv_path)
+    # Create a mask to filter the rows with type indicator and level of confidence
+    mask = (out_csv_df["type_indicator"] != "-") | (out_csv_df["level_confidence"] != "-")
+    # Apply the mask to the output CSV DataFrame
+    processed_rows = out_csv_df[mask]
+    # Get the unique dates and sensors that have been already saved
+    unique_date_sensor = (processed_rows["date"] + " - " + processed_rows["sensor"]).unique().tolist()
+    
+    return unique_date_sensor
+
 def set_sdw_dropdown(canvas: Canvas):
     """
     Set the dropdown menu for the SDW selection.
@@ -39,6 +54,13 @@ def set_sdw_dropdown(canvas: Canvas):
     # Set the SDW dropdown menu
     sdw_options = [f"{sdw_fc.iloc[i]['date']} - {sdw_fc.iloc[i]['sensor']}" for i in sdw_fc.index]
     sdw_dropdown = SDWDropdownApp(canvas, sdw_options)
+    # Get the previous saved SDWs if any
+    previous_sdws = get_previous_sdws()
+    if previous_sdws:
+        # Set the previous saved SDWs as selected
+        sdw_dropdown.previous_selected_options = previous_sdws
+        # Update the background color of the previous selected SDWs
+        sdw_dropdown.update_selected_colors()
     
     return sdw_dropdown
 
@@ -349,17 +371,20 @@ def command_save_sdw_button(sdw_dropdown, entry_1):
         (out_csv_df["sensor"] == sensor_sdw) & \
             (out_csv_df["transect_id"].isin(transects_selection))
             
-    # 2 == Update the background color of the previous selected SDW ==
+    # 2 == Update the background color of the previous selected SDW and transects==
+    # SDWs
     sdw_dropdown.update_previous_selected_options()
     sdw_dropdown.update_selected_colors()
-
+    # Transects
+    transects_dropdown.saved_transects += transects_selection
+    transects_dropdown.update_selected_colors()
+    
     # 3 == Update the out_csv_df with the selected type indicator and level of confidence ==
     # Update the out_csv_df with the selected type indicator
     out_csv_df.loc[mask, "type_indicator"] = type_indicator
     # Update the out_csv_df with the selected level of confidence
     out_csv_df.loc[mask, "level_confidence"] = confidence_level
     # Give all permissions to the output CSV file
-    print("Ruta output csv", out_csv_path)
     out_csv_path_o = Path(out_csv_path)
     out_csv_path_o.chmod(stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
     # Save the out_csv_df to the output CSV file
