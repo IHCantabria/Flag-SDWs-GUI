@@ -14,9 +14,6 @@ import numpy as np
 from pathlib import Path
 import os
 import webbrowser
-import localtileserver
-from localtileserver import get_folium_tile_layer
-from localtileserver import TileClient
 
 class SDWDropdownApp():
     def __init__(self, canvas, options):
@@ -365,7 +362,7 @@ class MapBrowserApp():
         for _, row in transects_fc.iterrows():
             # Get the centroid of the transect 
             x, y = self.transformer.transform(row["geometry"].centroid.x,
-                                                  row["geometry"].centroid.y)
+                                              row["geometry"].centroid.y)
             # Create a marker with the transect id
             folium.Marker(
                 location=[y, x],  # Coordenadas del centroide
@@ -404,6 +401,12 @@ class MapBrowserApp():
             red = src.read(1)
             green = src.read(2)
             blue = src.read(3)
+            
+            # Get the bounds of the raster
+            bounds = src.bounds
+            # Transform the coordinates to lat/lon
+            bounds = self.transformer.transform(bounds.left, bounds.bottom) + \
+                self.transformer.transform(bounds.right, bounds.top)
 
             # Replace the nodata values with 0
             nodata_value = src.nodatavals[0]  # Assuming all bands have the same nodata value
@@ -422,25 +425,14 @@ class MapBrowserApp():
             blue = normalize(blue)
 
             # Convert the bands to uint8
-            rgb = np.stack((red, green, blue), axis=0).astype(np.uint8)
+            rgb = np.dstack((red, green, blue)).astype(np.uint8)
 
-            # Copy the metadata of the source raster file
-            profile = src.profile
-            profile.update(dtype=rio.uint8, count=3, nodata=0)
-
-            # Save the normalized RGB raster as a temporary file
-            out_temp_raster = os.path.join(Path(input_info_file).parent.parent, 'temp_normalized_rgb.tif')
-            with rio.open(out_temp_raster, 'w', **profile) as dst:
-                dst.write(rgb)
-            
-            # Create a tile server from local raster file
-            tile_client = TileClient(out_temp_raster)
-            # Clear cache
-            #tile_client.clear_cache()
-            # Create folium tile layer from that server
-            tile_layer = get_folium_tile_layer(tile_client, name=f"Layer_{randint(0, 10000)}") # Random name to avoid conflicts
-            self.map.add_child(tile_layer)
-            del tile_client, tile_layer
+            # Add the RGB image to the map
+            folium.raster_layers.ImageOverlay(
+                image=rgb,
+                bounds=[[bounds[1], bounds[0]], [bounds[3], bounds[2]]],
+                name="RGB Image"
+                ).add_to(self.map)
             
     def open_map(self):
         """
