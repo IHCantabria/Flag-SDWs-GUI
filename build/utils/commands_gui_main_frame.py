@@ -318,12 +318,18 @@ def command_plot_button(window: tk.Tk, canvas: Canvas, sdw_dropdown: SDWDropdown
     """
     # Get the selected SDW
     sdw_selection = sdw_dropdown.selected_option.get()
-    # Plot the tide data
-    plot_time_series(window, sdw_selection, "tide")
-    # Plot the Hs data
-    plot_time_series(window, sdw_selection, "hs")
-    # Show the flood or ebb tide image
-    show_flood_ebb(canvas, sdw_selection)
+    try:
+        # Plot the tide data
+        plot_time_series(window, sdw_selection, "tide")
+        # Show the flood or ebb tide image
+        show_flood_ebb(canvas, sdw_selection)
+    except KeyError:
+        print("No tide data for the selected date.")
+    try:
+        # Plot the Hs data
+        plot_time_series(window, sdw_selection, "hs")
+    except KeyError:
+        print("No wave data for the selected date.")
     # Show the SDW data
     show_sdw_data(window, sdw_selection)
     # Create the map browser
