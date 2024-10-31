@@ -4,7 +4,7 @@ This repository contains a GUI software designed to identify instances where a S
 
 <div align="center">
   <a href="https://github.com/AlbertGallegoJimenez/Flag-SDWs-GUI">
-    <img src="images/type_indicators.png" width="50%">
+    <img src="images/type_indicators.PNG" width="50%">
   </a>
 
   <i> Figure 1. Types of indicators detected as waterlines. </i>
