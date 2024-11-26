@@ -1,4 +1,6 @@
 # Flag-SDWs-GUI
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.14224038.svg)](https://doi.org/10.5281/zenodo.14224038)
+
 
 This repository contains a GUI software designed to identify instances where a Satellite-Derived Waterline (SDW) is unable to accurately detect the land-water interface, whether partially or fully. The main objective is to label, within a preestablished options (see Figure 1), which indicator the SDW is actually detecting. To do so, the present GUI facilitates the visualization of each SDW with its satellite image smoothly. Finally, the results are saved as a CSV file for further analysis.
 
