@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it as below.
+authors:
+- family-names: Gallego Jiménez
+  given-names: Albert
+  orcid: "https://orcid.org/0000-0001-9038-7250"
+title: Flag SDWs GUI
+version: 1.0.0
+doi: 10.5281/zenodo.14224038
+date-released: 2024-09-23
+url: "https://github.com/IHCantabria/Flag-SDWs-GUI"
