@@ -69,9 +69,12 @@ class SDWDropdownApp():
         # Clear the previous selected option
         self.selected_options.clear()
         # Update the list of selected options
-        self.selected_options.append(selected_index[0])
-        # Update the selected option
-        self.selected_option.set(self.options[selected_index[0]])
+        try:
+            self.selected_options.append(selected_index[0])
+            # Update the selected option
+            self.selected_option.set(self.options[selected_index[0]])
+        except IndexError:
+            pass
         print(f"SDW Selected: {self.selected_option.get()}")
         self.update_selected_colors()
             
@@ -242,9 +245,13 @@ class TypeIndicatorDropdownApp():
         # Clear the previous selected option
         self.selected_options.clear()
         # Update the list of selected options
-        self.selected_options.append(selected_index[0])
-        # Update the selected option
-        self.selected_option.set(self.options[selected_index[0]])
+        try:
+            self.selected_options.append(selected_index[0])
+            # Update the selected option
+            self.selected_option.set(self.options[selected_index[0]])
+        except IndexError:
+            pass
+
         print(f"Type of indicator Selected: {self.selected_option.get()}")
         self.update_selected_colors()
             
@@ -306,10 +313,13 @@ class ConfidenceLevelDropdownApp():
         selected_index = self.dropdown_listbox.curselection()
         # Clear the previous selected option
         self.selected_options.clear()
-        # Update the list of selected options
-        self.selected_options.append(selected_index[0])
-        # Update the selected option
-        self.selected_option.set(self.options[selected_index[0]])
+        try:
+            # Update the list of selected options
+            self.selected_options.append(selected_index[0])
+            # Update the selected option
+            self.selected_option.set(self.options[selected_index[0]])
+        except IndexError:
+            pass
         print(f"Level of Confidence Selected: {self.selected_option.get()}")
         self.update_selected_colors()
             
@@ -326,7 +336,7 @@ class MapBrowserApp():
         # Read the SDW and transects fc
         self.sdw_selection = sdw_selection
         # Create the map object
-        self.map = folium.Map()
+        self.map = folium.Map(control_scale=True)
         # Set the extent of the map to the transects fc
         self.set_extent()
         # Add the transects fc to the map
