@@ -357,10 +357,20 @@ class MapBrowserApp():
         # Get the selected SDW
         self.date_sdw = self.sdw_selection.split(" - ")[0]
         self.sensor_sdw = self.sdw_selection.split(" - ")[1]
+        self.algorithm_sdw = self.sdw_selection.split(" - ")[2]
+        self.index_sdw = self.sdw_selection.split(" - ")[3]
+        self.threshold_sdw = self.sdw_selection.split(" - ")[4]
         # Add the SDW fc to the map
-        sdw_fc_row = sdw_fc[(sdw_fc["date"] == self.date_sdw) & (sdw_fc["sensor"] == self.sensor_sdw)]
+        sdw_fc_row = sdw_fc[(
+            (sdw_fc["date"] == self.date_sdw) &
+            (sdw_fc["sensor"] == self.sensor_sdw) &
+            (sdw_fc["algorithm"] == self.algorithm_sdw) &
+            (sdw_fc["index"] == self.index_sdw) &
+            (sdw_fc["threshold"] == self.threshold_sdw)
+            )]
         # Add the name of the SDW as a tooltip
-        sdw_fc_row["date-sensor"] = self.date_sdw.split(" ")[0] + " - " + self.sensor_sdw # YYYY-MM-DD - Sensor
+        sdw_fc_row["date-sensor"] = self.date_sdw.split(" ")[0] + " - " + self.sensor_sdw + " - " + \
+            self.algorithm_sdw + " - " + self.index_sdw + " - " + str(self.threshold_sdw)
         tooltip = folium.GeoJsonTooltip(fields=["date-sensor"], aliases=["SDW Date-Sensor"])
         # Add the SDW to the map
         GeoJson(sdw_fc_row,

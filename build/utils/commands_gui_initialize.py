@@ -139,10 +139,17 @@ def create_out_csv(output_folder_path: str, sdw_fc: gpd.GeoDataFrame, transects_
     if not "sensor" in sdw_fc.columns:
         sdw_fc["sensor"] = "S2" # As this tool is intended to be used with Sentinel-2 data, we set the sensor to S2
         intersected_fc["sensor"] = "S2"
+    for col in ["algorithm", "index", "threshold"]:
+        if col not in sdw_fc.columns:
+            sdw_fc[col] = "-"
     # Create a CSV file with the most important information
     global out_csv_path
     out_csv_path = os.path.join(output_folder_path, "flag_sdw_output.csv")
-    cols_to_keep = ["date", "transect_id", "sensor", "type_indicator", "level_confidence"]
+    cols_to_keep = [
+        "date", "transect_id", "sensor", 
+        "algorithm", "index", "threshold",
+        "type_indicator", "level_confidence" # these columns will be filled in the main GUI frame
+        ]
     intersected_fc[cols_to_keep].to_csv(out_csv_path, index=False)
     # Create a global DataFrame variable with the output CSV file
     global out_csv_df

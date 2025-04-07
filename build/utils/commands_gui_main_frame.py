@@ -37,7 +37,17 @@ def get_previous_sdws() -> list:
     # Apply the mask to the output CSV DataFrame
     processed_rows = out_csv_df[mask]
     # Get the unique dates and sensors that have been already saved
-    unique_date_sensor = (processed_rows["date"] + " - " + processed_rows["sensor"]).unique().tolist()
+    unique_date_sensor = (
+        processed_rows["date"] +
+        " - " +
+        processed_rows["sensor"] +
+        " - " +
+        processed_rows["algorithm"] +
+        " - " +
+        processed_rows["index"] +
+        " - " +
+        processed_rows["threshold"]
+        ).unique().tolist()
     
     return unique_date_sensor
 
@@ -52,7 +62,7 @@ def set_sdw_dropdown(canvas: Canvas):
     - None
     """
     # Set the SDW dropdown menu
-    sdw_options = [f"{sdw_fc.iloc[i]['date']} - {sdw_fc.iloc[i]['sensor']}" for i in sdw_fc.index]
+    sdw_options = [f"{sdw_fc.iloc[i]['date']} - {sdw_fc.iloc[i]['sensor']} - {sdw_fc.iloc[i]['algorithm']} - {sdw_fc.iloc[i]['index']} - {sdw_fc.iloc[i]['threshold']}" for i in sdw_fc.index]
     sdw_dropdown = SDWDropdownApp(canvas, sdw_options)
     # Get the previous saved SDWs if any
     previous_sdws = get_previous_sdws()
@@ -77,9 +87,18 @@ def set_transects_dropdown(canvas: Canvas, sdw_selection: str):
     # Get the selected date and sensor
     date_sdw = sdw_selection.split(" - ")[0]
     sensor_sdw = sdw_selection.split(" - ")[1]
+    alg_sdw = sdw_selection.split(" - ")[2]
+    index_sdw = sdw_selection.split(" - ")[3]
+    threshold_sdw = sdw_selection.split(" - ")[4]
     # Get the transects for the selected date and sensor
-    transects_options = out_csv_df.loc[(out_csv_df["date"] == date_sdw) & (out_csv_df["sensor"] == sensor_sdw),
-                                       "transect_id"].unique().tolist()
+    transects_options = out_csv_df.loc[(
+        (out_csv_df["date"] == date_sdw) &
+        (out_csv_df["sensor"] == sensor_sdw) &
+        (out_csv_df["algorithm"] == alg_sdw) &
+        (out_csv_df["index"] == index_sdw) &
+        (out_csv_df["threshold"] == threshold_sdw)
+        ),
+        "transect_id"].unique().tolist()
     transects_dropdown = TransectsDropdownApp(canvas, transects_options)
     
     return transects_dropdown
@@ -244,6 +263,9 @@ def show_sdw_data(window: tk.Tk, sdw_selection: str):
     # Get the selected SDW
     date_sdw = sdw_selection.split(" - ")[0]
     sensor_sdw = sdw_selection.split(" - ")[1]
+    algorithm_sdw = sdw_selection.split(" - ")[2]
+    index_sdw = sdw_selection.split(" - ")[3]
+    threshold_sdw = sdw_selection.split(" - ")[4]
     # Check that the SDW feature class has the extra columns
     extra_cols = ["algorithm", "index", "threshold"]
     # Check that the extra_cols exist in the sdw_fc GeoDataFrame, otherwise create them with NaN values
@@ -251,7 +273,13 @@ def show_sdw_data(window: tk.Tk, sdw_selection: str):
         if col not in sdw_fc.columns:
             sdw_fc[col] = "NaN"
     # Get the selected row of the sdw_fc GeoDataFrame
-    sdw_fc_row = sdw_fc[(sdw_fc["date"] == date_sdw) & (sdw_fc["sensor"] == sensor_sdw)]
+    sdw_fc_row = sdw_fc[(
+        (sdw_fc["date"] == date_sdw) &
+        (sdw_fc["sensor"] == sensor_sdw) &
+        (sdw_fc["algorithm"] == algorithm_sdw) &
+        (sdw_fc["index"] == index_sdw) &
+        (sdw_fc["threshold"] == threshold_sdw)
+        )]
     # Turn uppercase all columns
     sdw_fc_row.columns = sdw_fc_row.columns.str.upper()
     # Create a matplotlib table with the selected SDW data
@@ -363,9 +391,12 @@ def command_save_sdw_button(sdw_dropdown, entry_1):
         saved_sdws = []
     sdw_selection = sdw_dropdown.selected_option.get()
     saved_sdws.append(sdw_selection)
-    # Get the selected date and sensor
+    # Get the selected info
     date_sdw = sdw_selection.split(" - ")[0]
     sensor_sdw = sdw_selection.split(" - ")[1]
+    algorithm_sdw = sdw_selection.split(" - ")[2]
+    index_sdw = sdw_selection.split(" - ")[3]
+    threshold_sdw = sdw_selection.split(" - ")[4]
     # Get the selected transect IDs
     transects_selection = eval(transects_dropdown.selected_option.get())
     # Get the type of indicator
@@ -375,7 +406,10 @@ def command_save_sdw_button(sdw_dropdown, entry_1):
     # Create a boolean mask for the date, sensor, and transect IDs
     mask = (out_csv_df["date"] == date_sdw) & \
         (out_csv_df["sensor"] == sensor_sdw) & \
-            (out_csv_df["transect_id"].isin(transects_selection))
+            (out_csv_df["algorithm"] == algorithm_sdw) & \
+                (out_csv_df["index"] == index_sdw) & \
+                    (out_csv_df["threshold"] == threshold_sdw) & \
+                        (out_csv_df["transect_id"].isin(transects_selection))
             
     # 2 == Update the background color of the previous selected SDW and transects==
     # SDWs
@@ -398,7 +432,7 @@ def command_save_sdw_button(sdw_dropdown, entry_1):
     
     # 4 == Update the entry_1 widget with the selected SDW ==
     # Calculate the number of SDW left to save
-    unique_date_sensor = (out_csv_df["date"] + " - " + out_csv_df["sensor"]).unique()
+    unique_date_sensor = (out_csv_df["date"] + " - " + out_csv_df["sensor"] + " - " + out_csv_df["algorithm"] + " - " + out_csv_df["index"] + " - " + out_csv_df["threshold"]).unique()
     sdw_left = len(unique_date_sensor) - len(saved_sdws)
     # Update the entry_1 widget with the number of SDW left to save
     #entry_1.delete(0, tk.END)
