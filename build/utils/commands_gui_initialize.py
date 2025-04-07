@@ -135,6 +135,10 @@ def create_out_csv(output_folder_path: str, sdw_fc: gpd.GeoDataFrame, transects_
     intersected_fc = gpd.overlay(sdw_fc, transects_fc, how="intersection", keep_geom_type=False)
     # Create the two empty columns that will be filled in the main GUI frame
     intersected_fc[["type_indicator", "level_confidence"]] = "-"
+    # Check if "sensor" column exists in the SDW feature class
+    if not "sensor" in sdw_fc.columns:
+        sdw_fc["sensor"] = "S2" # As this tool is intended to be used with Sentinel-2 data, we set the sensor to S2
+        intersected_fc["sensor"] = "S2"
     # Create a CSV file with the most important information
     global out_csv_path
     out_csv_path = os.path.join(output_folder_path, "flag_sdw_output.csv")
